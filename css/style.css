@@ -19,7 +19,7 @@ body {
 }
 
 #canvas {
-    background-color: #1e1e1e;
+    background-color: black;
     border: 1px solid black;
     position: absolute;
     top: 50%;

@@ -3,8 +3,16 @@ export default class Enemy {
         this.game = game;
         this.width = 0;
         this.height = 0;
-        this.x = 0;
-        this.y = 0;
+        this.x;
+        this.y;
+        this.spawnSide = Math.floor(Math.random() * 3) + 1; // Random number from 1 to 3
+        if (this.spawnSide === 1) {
+            this.spawnSide = 'right'; // 1 for right
+        } else if (this.spawnSide === 2) {
+            this.spawnSide = 'top'; // 2 for top
+        } else if (this.spawnSide === 3) {
+            this.spawnSide = 'left'; // 3 for left
+        }
         this.speed = 400; // Movement speed for both X and Y
         this.zoomW = 0.9; // Zoom for width in Z-plane
         this.zoomH = 0.18; // Zoom for height in Z-plane
@@ -13,31 +21,38 @@ export default class Enemy {
         this.targetY = 0; // Target Y for center movement
         this.inZPlane = false; // Flag to indicate Z-plane movement
         this.rotation = 0; // Rotation angle
-        this.zDirectionX = 0; // X direction when moving in Z-plane
-        this.zDirectionY = 1.5; // Y direction when moving in Z-plane
+        this.zDirectionX = 1.5; // X direction when moving in Z-plane
+        this.zDirectionY = 1.2; // Y direction when moving in Z-plane
     }
+
+
 
     start() {
         this.available = false;
-
-        // Randomly spawn from the left or right side
-        if (Math.random() < 0.5) {
+    
+         // Randomly spawn from the left, right, or top
+        if (this.spawnSide === 'left') {
             this.x = -this.width; // Spawn from the left
-        } else {
-            this.x = this.game.width + this.width; // Spawn from the right
+            this.y = Math.random() * this.game.height; // Random Y position
+        } else if (this.spawnSide === 'right') {
+            this.x = this.game.width; // Spawn from the right
+            this.y = Math.random() * this.game.height; // Random Y position
+        } else if (this.spawnSide === 'top') {
+            this.x = Math.random() * this.game.width; // Random X position
+            this.y = 0; // Spawn from the top
         }
-
-        this.y = Math.random() * (this.game.height * 0.9); // Start near the top
-
+    
+    
         // Set a target point near the center, add some variation to avoid always hitting exact center
         this.targetX = (this.game.width / 2) + (Math.random() * this.game.width * 0.5 - this.game.width * 0.25); 
         this.targetY = (this.game.height * 0.3) + (Math.random() * this.game.height * 0.4 - this.game.height * 0.2);
-
+    
         // Reset size and Z-plane movement
         this.width = 40;
         this.height = 20;
         this.inZPlane = false;
     }
+    
 
     reset() {
         this.available = true;
@@ -58,6 +73,7 @@ export default class Enemy {
                     const moveX = (deltaX / distanceToCenter) * this.speed * deltaTime / 1000;
                     const moveY = (deltaY / distanceToCenter) * this.speed * deltaTime / 1000;
                 
+
                     this.x += moveX;
                     this.y += moveY;
                 }
@@ -122,86 +138,3 @@ export default class Enemy {
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-// export default class Enemy {
-//     constructor(game) {
-//         this.game = game;
-//         this.width = 0;
-//         this.height = 0;
-//         this.x = 0;
-//         this.y = 0;
-//         this.speedX = Math.random() < 0.5 ? -Math.random() * 0.5 : Math.random() * 0.5;
-//         this.speedY = 0.09; 
-//         this.zoomW = 0.08; 
-//         this.zoomH = 0.04;
-//         this.available = true;
-//     }
-
-//     start() {
-//         this.available = false;
-
-//         // Initialize position
-//         this.x = Math.floor(Math.random() * (this.game.width * 0.1)) + this.game.width * 0.45;
-//         const landHeight = this.game.height * 0.5; // Assuming half the screen is land
-//         this.y = landHeight;
-
-//         this.width = 0;
-//         this.height = 0;
-//     }
-
-//     reset() {
-//         this.available = true;
-//     }
-
-//     update(deltaTime) {
-//         if (!this.available) {
-//             // Update position based on speed and zoom factors
-//             this.x += this.speedX * (1 + this.width / 100);
-//             this.y += this.speedY * (1 + this.height / 100);
-
-//             // Apply zoom effect to create 3D illusion
-//             if (this.height < 100) { // Limit the maximum height
-//                 this.width += this.zoomW;
-//                 this.height += this.zoomH;
-//             }
-
-//             this.game.boltPool.forEach(bolt => {
-//                 if (!bolt.available && this.game.checkCollision(this, bolt)) {
-//                     bolt.reset()
-//                     this.reset()
-//                 }
-//             })
-//             // Check if the spaceship has moved out of bounds
-//             if (this.y > this.game.height || this.x > this.game.width || this.x < -this.width) {
-//                 this.reset();
-//             }
-//         }
-//     }
-
-//     draw() {
-//         if (!this.available) {
-//             this.game.ctx.save();
-
-//             // Apply 3D transformation (perspective)
-//             const scaleFactor = 1 - (this.height / 200); // Adjust the scale factor as needed
-//             this.game.ctx.translate(this.x, this.y);
-//             this.game.ctx.scale(scaleFactor, scaleFactor);
-
-//             this.game.ctx.beginPath();
-//             this.game.ctx.rect(-this.width / 2, -this.height / 2, this.width, this.height);
-//             this.game.ctx.fillStyle = "cyan";
-//             this.game.ctx.fill();
-            
-//             this.game.ctx.restore();
-//         }
-//     }
-// }

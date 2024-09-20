@@ -2,6 +2,7 @@ import Aim from "./aim.js";
 import Gun from "./gun.js";
 import Bolt from "./bolt.js";
 import Enemy from "./enemy.js";
+import Star from "./star.js";
 
 export default class Game {
     constructor(canvas, ctx) {
@@ -14,7 +15,7 @@ export default class Game {
         this.aim = new Aim(this, 100);
         this.gun = new Gun(this, this.width * .25);
         this.gun2 = new Gun(this, this.width * .75);
-        this.enemy = new Enemy(this)
+        this.star = new Star(this)
 
         this.boltPool = [];
         this.numberOfbolt = 500;
@@ -26,9 +27,17 @@ export default class Game {
         this.enemyInterval = 500;
         this.createEnemyPool();
 
+        this.starPool = [];
+        this.numberOfStars = 3000; // Define the number of stars you want to create
+        this.starTimer = 0;
+        this.starInterval = 10; // Adjust the interval to control star creation
+        this.createStarPool();
+
+
         this.keys = [];
 
         this.start();
+        // this.toggleFullScreen();
 
         // Debounced resize function
         window.addEventListener('resize', this.debounce((e) => {
@@ -161,6 +170,30 @@ export default class Game {
         }
     }
 
+    // Star creation
+    createStarPool() {
+        for (let i = 0; i < this.numberOfStars; i++) {
+            this.starPool.push(new Star(this));
+        }
+    }
+
+    getStar() {
+        const foundStar = this.starPool.find(star => star.available);
+        return foundStar ? foundStar : undefined;
+    }
+
+    handleStars(deltaTime) {
+        if (this.starTimer < this.starInterval) {
+            this.starTimer += deltaTime;
+        } else {
+            this.starTimer = 0;
+            const star = this.getStar();
+            if (star) {
+                star.start();
+            }
+        }
+    }
+
     drawStatusText() {
         this.ctx.save();
         this.ctx.beginPath()
@@ -171,15 +204,19 @@ export default class Game {
 
     // Game Render Function
     render(deltaTime) {
+        this.handleStars(deltaTime);
+        this.starPool.forEach(star => {
+            star.update(deltaTime);
+            star.draw();
+        });
+
         this.handleEnemy(deltaTime);
         this.enemyPool.forEach(enemy => {
             enemy.update(deltaTime);
             enemy.draw()
         })
-        this.gun.update(deltaTime)
-        this.gun2.update(deltaTime)
-        // this.gun.draw()
-        // this.gun2.draw()
+        this.gun.update()
+        this.gun2.update()
         this.aim.update(deltaTime)
         this.aim.draw()
         this.boltPool.forEach(bolt => {
@@ -187,8 +224,5 @@ export default class Game {
             bolt.draw();
         })
         this.drawStatusText()
-        // if (this.width < 1350 && this.width > 400) {
-        //     // this.movement.draw();
-        // }
     }
 }
