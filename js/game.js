@@ -1,6 +1,7 @@
 import Aim from "./aim.js";
 import Gun from "./gun.js";
 import Bolt from "./bolt.js";
+import Enemy from "./enemy.js";
 
 export default class Game {
     constructor(canvas, ctx) {
@@ -11,18 +12,19 @@ export default class Game {
         this.height = canvas.height;
 
         this.aim = new Aim(this, 100);
-        this.gun = new Gun(this, 0);
-        this.gun2 = new Gun(this, this.width - this.gun.width);
-        
+        this.gun = new Gun(this, this.width * .25);
+        this.gun2 = new Gun(this, this.width * .75);
+        this.enemy = new Enemy(this)
+
         this.boltPool = [];
         this.numberOfbolt = 500;
         this.createboltPool();
 
-        this.mouse = {
-            x: undefined,
-            y: undefined,
-            isClicked: false,
-        }
+        this.enemyPool = [];
+        this.numberOfEnemies = 1000;
+        this.enemyTimer = 0;
+        this.enemyInterval = 500;
+        this.createEnemyPool();
 
         this.keys = [];
 
@@ -32,24 +34,6 @@ export default class Game {
         window.addEventListener('resize', this.debounce((e) => {
             this.resize(e.target.innerWidth, e.target.innerHeight);
         }, 100));
-
-
-        window.addEventListener('mousemove', e => {
-            e.preventDefault();
-            this.mouse.x = e.offsetX;
-            this.mouse.y = e.offsetY;
-        })
-        window.addEventListener('mousedown', e => {
-            e.preventDefault();
-            this.mouse.x = e.offsetX;
-            this.mouse.y = e.offsetY;
-            this.mouse.isClicked = true;
-        })
-        window.addEventListener('mouseup', (e) => {
-            e.preventDefault();
-            this.mouse.isClicked = false;
-        })
-
         window.addEventListener('keydown', e => {
             if (this.keys.indexOf(e.key) === -1) {
                 this.keys.push(e.key);
@@ -65,12 +49,17 @@ export default class Game {
         document.querySelector('#fullScreenButton').addEventListener('click', () => {
             this.toggleFullScreen();
         })
+        document.querySelector('#resetButton').addEventListener('click', () => {
+            window.location.reload();
+        })
     }
 
 
+    // Basic utility functions
     debounce(func, delay) {
         let timeout;
         return function (...args) {
+
             const context = this;
             clearTimeout(timeout);
             timeout = setTimeout(() => {
@@ -78,7 +67,6 @@ export default class Game {
             }, delay);
         };
     }
-
     toggleFullScreen() {
         if (!document.fullscreenElement) {
             document.documentElement.requestFullscreen();
@@ -86,7 +74,6 @@ export default class Game {
             document.exitFullscreen();
         }
     }
-
     start() {
         this.resize(window.innerWidth, window.innerHeight);
     }
@@ -96,18 +83,31 @@ export default class Game {
         this.width = width;
         this.height = height;
     }
-    checkCollision(circle1, circle2) {
-        const dx = circle2.x - circle1.x;
-        const dy = circle2.y - circle1.y;
-        const distance = Math.hypot(dx, dy);
-        const sumOfRadi = circle1.radius + circle2.radius;
-        if (distance <= sumOfRadi) {
-            return true;
+
+    // game logic : Calculation functions
+    checkCollision(rect1, rect2) {
+        // Extract the coordinates and dimensions of the rectangles
+        const rect1Left = rect1.x;
+        const rect1Right = rect1.x + rect1.width;
+        const rect1Top = rect1.y;
+        const rect1Bottom = rect1.y + rect1.height;
+        
+        const rect2Left = rect2.x;
+        const rect2Right = rect2.x + rect2.width;
+        const rect2Top = rect2.y;
+        const rect2Bottom = rect2.y + rect2.height;
+        
+        // Check for overlap
+        if (rect1Right < rect2Left || // Rect1 is to the left of Rect2
+            rect1Left > rect2Right || // Rect1 is to the right of Rect2
+            rect1Bottom < rect2Top || // Rect1 is above Rect2
+            rect1Top > rect2Bottom) { // Rect1 is below Rect2
+            return false; // No collision
         }
-        else {
-            return false;
-        }
+        
+        return true; // Collision detected
     }
+    
     getAngle(obj1X, obj1Y, obj2X, obj2Y) {
         const dx = obj1X - obj2X;
         const dy = obj1Y - obj2Y;
@@ -119,6 +119,8 @@ export default class Game {
         const dy = obj1Y - obj2Y;
         return Math.hypot(dx, dy) < Obj2Radius;
     }
+
+    // Bolt creation
     createboltPool() {
         for (let i = 0; i < this.numberOfbolt; i++) {
             this.boltPool.push(new Bolt(this))
@@ -133,6 +135,32 @@ export default class Game {
         }
     }
 
+    // Enemy creation
+    createEnemyPool() {
+        for (let i = 0; i < this.numberOfEnemies; i++) {
+            this.enemyPool.push(new Enemy(this));
+        }
+    }
+    getEnemy() {
+        if (!this.enemyPool) {
+            return null;
+        } else {
+            const foundEnemy = this.enemyPool.find(enemy => enemy.available);
+            return foundEnemy ? foundEnemy : undefined;
+        }
+    }
+    handleEnemy(deltaTime) {
+        if (this.enemyTimer < this.enemyInterval) {
+            this.enemyTimer += deltaTime;
+        } else {
+            this.enemyTimer = 0;
+            const enemy = this.getEnemy();
+            if (enemy) {
+                enemy.start();
+            }
+        }
+    }
+
     drawStatusText() {
         this.ctx.save();
         this.ctx.beginPath()
@@ -140,21 +168,27 @@ export default class Game {
         this.ctx.fillText('Score', this.canvas.width / 2, 35);
         this.ctx.restore();
     }
-    a
+
+    // Game Render Function
     render(deltaTime) {
+        this.handleEnemy(deltaTime);
+        this.enemyPool.forEach(enemy => {
+            enemy.update(deltaTime);
+            enemy.draw()
+        })
         this.gun.update(deltaTime)
         this.gun2.update(deltaTime)
-        this.gun.draw()
-        this.gun2.draw()
-        this.aim.update()
+        // this.gun.draw()
+        // this.gun2.draw()
+        this.aim.update(deltaTime)
         this.aim.draw()
         this.boltPool.forEach(bolt => {
             bolt.update(deltaTime);
             bolt.draw();
         })
         this.drawStatusText()
-        if (this.width < 1350 && this.width > 400) {
-            // this.movement.draw();
-        }
+        // if (this.width < 1350 && this.width > 400) {
+        //     // this.movement.draw();
+        // }
     }
 }

@@ -6,7 +6,7 @@ export default class Bolt {
         this.speedX;
         this.speedY;
         this.zoomH = 1;
-        this.zoomW = 1/2;
+        this.zoomW = .5;
         this.available = true;
         this.rotation = 0; // Store the initial rotation of the bullet
     }
@@ -17,8 +17,8 @@ export default class Bolt {
         this.width = 10;
         this.x = x;
         this.y = y;
-        this.speedX = speedX * 400;
-        this.speedY = speedY * 400;
+        this.speedX = speedX * 500;
+        this.speedY = speedY * 500;
 
         // Calculate the initial angle only once when the bolt is fired
         this.rotation = Math.atan2(speedY, speedX); // Store the angle
@@ -45,6 +45,7 @@ export default class Bolt {
             if (this.height <= 0 || this.width <= 0) {
                 this.reset();
             }
+            
         }
     }
 

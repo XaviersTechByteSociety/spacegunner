@@ -7,11 +7,16 @@ export default class Gun {
         this.y = this.game.height + this.height;
         this.bulletTimer = 0;
         this.bulletInterval = 100;
+
+        this.isShooting = false;
+
+        document.querySelector('.shoot').addEventListener('touchstart', () => this.isShooting = true)
+        document.querySelector('.shoot').addEventListener('touchend', () => this.isShooting = false)
     }
     update(deltaTime) {
-        if(this.game.mouse.isClicked) {
-            this.shoot(deltaTime)
-        }
+        this.game.deltaTime = deltaTime;
+        if (this.isShooting) this.shoot(deltaTime)
+        if (this.game.keys.includes(' ')) this.shoot(deltaTime);
     }
     shoot(deltaTime) {
         if (this.bulletTimer < this.bulletInterval) {
@@ -27,8 +32,9 @@ export default class Gun {
                 const angle = this.game.getAngle(this.game.aim.x + this.game.aim.width / 2, this.game.aim.y + this.game.aim.height / 2, this.x, this.y - this.height);
 
                 // Tip of the gun where the bullet should spawn (accounting for the gun rotation)
-                const gunTipX = this.x + Math.cos(angle) * this.height;
-                const gunTipY = this.y - this.height + Math.sin(angle) * this.height;
+                const gunTipX = this.x + Math.cos(angle);
+                const gunTipY = this.y - this.height + Math.sin(angle);
+
 
                 // Speed and velocity
                 const speed = 4; // Adjust the speed as needed
@@ -39,26 +45,27 @@ export default class Gun {
                 bullet.start(gunTipX, gunTipY, vx, vy);
             }
         }
+        console.log('shoot')
     }
     draw() {
         this.game.ctx.save();
-    
+
         // Step 1: Move the origin to the tip of the gun (opposite the pivot)
         this.game.ctx.translate(this.x, this.y - this.height);
-    
+
         // Step 2: Calculate the angle towards the aim and rotate the gun
         const angle = this.game.getAngle(this.game.aim.x + this.game.aim.width / 2, this.game.aim.y + this.game.aim.height / 2, this.x, this.y - this.height);
         this.game.ctx.rotate(angle + Math.PI / 2); // Adjust by 90 degrees to correct orientation
-    
+
         // Step 3: Draw the gun so that it rotates from the tip, following the aim
         this.game.ctx.beginPath();
         this.game.ctx.fillStyle = "blue";
-        
+
         // Now, the gun is drawn from its tip (0, 0) downward
-        this.game.ctx.rect(-this.width / 2, -this.height, this.width, this.height); 
-    
+        this.game.ctx.rect(-this.width / 2, -this.height, this.width, this.height);
+
         this.game.ctx.fill();
         this.game.ctx.restore();
     }
-    
+
 }
