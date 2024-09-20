@@ -42,7 +42,6 @@ export default class Aim {
         if (this.game.keys.includes('ArrowLeft')) this.x -= this.speedX * deltaTime / 1000;
         if (this.game.keys.includes('ArrowRight')) this.x += this.speedX * deltaTime / 1000;
 
-
     }
     draw() {
         this.game.ctx.save();

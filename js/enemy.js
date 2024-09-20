@@ -12,19 +12,22 @@ export default class Enemy {
         this.targetX = 0; // Target X for center movement
         this.targetY = 0; // Target Y for center movement
         this.inZPlane = false; // Flag to indicate Z-plane movement
+        this.rotation = 0; // Rotation angle
+        this.zDirectionX = 0; // X direction when moving in Z-plane
+        this.zDirectionY = 1.5; // Y direction when moving in Z-plane
     }
 
     start() {
         this.available = false;
 
-        // Randomly spawn from the top left or right
+        // Randomly spawn from the left or right side
         if (Math.random() < 0.5) {
             this.x = -this.width; // Spawn from the left
         } else {
             this.x = this.game.width + this.width; // Spawn from the right
         }
 
-        this.y = Math.random() * (this.game.height * .9); // Start near the top
+        this.y = Math.random() * (this.game.height * 0.9); // Start near the top
 
         // Set a target point near the center, add some variation to avoid always hitting exact center
         this.targetX = (this.game.width / 2) + (Math.random() * this.game.width * 0.5 - this.game.width * 0.25); 
@@ -48,25 +51,28 @@ export default class Enemy {
                 const deltaY = this.targetY - this.y;
                 const distanceToCenter = Math.hypot(deltaX, deltaY);
 
+                // Calculate rotation angle towards the target
+                this.rotation = Math.atan2(deltaY, deltaX);
+
                 if (distanceToCenter > 0.1) { // Prevent division by zero or small values
                     const moveX = (deltaX / distanceToCenter) * this.speed * deltaTime / 1000;
                     const moveY = (deltaY / distanceToCenter) * this.speed * deltaTime / 1000;
                 
                     this.x += moveX;
                     this.y += moveY;
-
-                    // const prevX = this.x;
-                    // const prevY = this.y;
-                    // if (prevX === this.x || prevY === this.y) console.log(`Enemy position: (${prevX}, ${prevY}), In Z-plane: ${this.inZPlane}`);
                 }
 
                 // If the enemy reaches the target center, switch to Z-plane movement
                 if (distanceToCenter < 10) { // Threshold to determine when to start Z-plane
                     this.inZPlane = true;
+
+                    // Set a diagonal direction for Z-plane movement
+                    this.zDirectionX = (Math.random() < 0.5 ? -1 : 1) * Math.random(); // Random diagonal direction
                 }
             } else {
-                // Phase 2: Z-plane movement (move downward and grow in size)
-                this.y += this.speed * 1.5 * deltaTime / 1000; // Move downward faster (toward the player)
+                // Phase 2: Z-plane movement (move diagonally and grow in size)
+                this.x += this.zDirectionX * this.speed * deltaTime / 1000; // Move diagonally in X
+                this.y += this.zDirectionY * this.speed * deltaTime / 1000; // Move downward faster (toward the player)
 
                 // Apply zoom to simulate forward movement
                 if (this.height < 200) { // Cap the maximum size for 3D effect
@@ -94,9 +100,16 @@ export default class Enemy {
         if (!this.available) {
             this.game.ctx.save();
 
+            // Move to the position of the enemy
+            this.game.ctx.translate(this.x, this.y);
+
+            // Apply rotation in the X-Y plane based on the movement direction
+            if (!this.inZPlane) {
+                this.game.ctx.rotate(this.rotation); // Rotate the enemy to face the movement direction
+            }
+
             // 3D transformation (scale the enemy as they move forward)
             const scaleFactor = 1 - (this.height / 300); // Adjust scale factor for perspective
-            this.game.ctx.translate(this.x, this.y);
             this.game.ctx.scale(scaleFactor, scaleFactor);
 
             // Draw the enemy spaceship
@@ -109,6 +122,7 @@ export default class Enemy {
         }
     }
 }
+
 
 
 

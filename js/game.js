@@ -21,7 +21,7 @@ export default class Game {
         this.createboltPool();
 
         this.enemyPool = [];
-        this.numberOfEnemies = 1000;
+        this.numberOfEnemies = 3000;
         this.enemyTimer = 0;
         this.enemyInterval = 500;
         this.createEnemyPool();
