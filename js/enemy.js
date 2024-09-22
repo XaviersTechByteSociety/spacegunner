@@ -100,6 +100,7 @@ export default class Enemy {
             // Check for collision with bolts
             this.game.boltPool.forEach(bolt => {
                 if (!bolt.available && this.game.checkCollision(this, bolt)) {
+                    this.game.score += 1;
                     bolt.reset();
                     this.reset();
                 }
@@ -108,6 +109,7 @@ export default class Enemy {
             // Check if enemy goes out of bounds
             if (this.y > this.game.height || this.x > this.game.width || this.x < -this.width) {
                 this.reset();
+                if (this.game.life > 0) this.game.life -= 1;
             }
         }
     }

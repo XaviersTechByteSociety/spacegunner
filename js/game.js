@@ -20,6 +20,8 @@ export default class Game {
         this.boltPool = [];
         this.numberOfbolt = 500;
         this.createboltPool();
+        this.score = 0;
+        this.life = 10;
 
         this.enemyPool = [];
         this.numberOfEnemies = 3000;
@@ -197,8 +199,9 @@ export default class Game {
     drawStatusText() {
         this.ctx.save();
         this.ctx.beginPath()
-        this.ctx.fillStyle = 'black';
-        this.ctx.fillText('Score', this.canvas.width / 2, 35);
+        this.ctx.fillStyle = 'cyan';
+        this.ctx.font = '15px Arial'
+        this.ctx.fillText(`score:  ${this.score}    |    life: ${this.life}`, this.canvas.width / 2, 35);
         this.ctx.restore();
     }
 

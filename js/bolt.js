@@ -6,9 +6,12 @@ export default class Bolt {
         this.speedX;
         this.speedY;
         this.zoomH = 1;
-        this.zoomW = .5;
+        this.zoomW = 1 / 2;
         this.available = true;
         this.rotation = 0; // Store the initial rotation of the bullet
+        this.distanceTraveled = 0; // Track how far the bolt has traveled
+        this.maxDistance = 500; // Set the max distance the bolt can travel
+        this.deceleration = 0.95; // Deceleration factor to slow down the bolt
     }
 
     start(x, y, speedX, speedY) {
@@ -20,7 +23,7 @@ export default class Bolt {
         this.speedX = speedX * 500;
         this.speedY = speedY * 500;
 
-        // Calculate the initial angle only once when the bolt is fired
+        this.distanceTraveled = 0; // Reset distance traveled on start
         this.rotation = Math.atan2(speedY, speedX); // Store the angle
     }
 
@@ -30,22 +33,33 @@ export default class Bolt {
 
     update(deltaTime) {
         if (!this.available) {
-            this.x += this.speedX * deltaTime / 1000;
-            this.y += this.speedY * deltaTime / 1000;
+            // Calculate distance to move this frame
+            const distanceX = this.speedX * deltaTime / 1000;
+            const distanceY = this.speedY * deltaTime / 1000;
+            this.x += distanceX;
+            this.y += distanceY;
 
+            // Increase the distance traveled by the bolt
+            this.distanceTraveled += Math.hypot(distanceX, distanceY);
+
+            // Slow down the bolt gradually
+            this.speedX *= this.deceleration;
+            this.speedY *= this.deceleration;
+
+            // Reduce the size of the bolt to simulate distance effect
             if (this.height > 0 || this.width > 0) {
                 this.height -= this.zoomH;
                 this.width -= this.zoomW;
             }
 
-            // Check if the bullet is out of bounds and reset it
-            if (this.y > this.game.height || this.x > this.game.width || this.x < 0 || this.y < 0) {
+            // Check if the bolt has traveled its max distance or gone out of bounds
+            if (this.distanceTraveled >= this.maxDistance || this.x > this.game.width || this.x < 0 || this.y > this.game.height || this.y < 0) {
                 this.reset();
             }
+
             if (this.height <= 0 || this.width <= 0) {
                 this.reset();
             }
-            
         }
     }
 
@@ -53,19 +67,16 @@ export default class Bolt {
         if (!this.available) {
             this.game.ctx.save();
 
-            // Move to the position of the bullet
+            // Move to the position of the bolt
             this.game.ctx.translate(this.x, this.y);
-            // this.game.ctx.translate(this.x, this.y - this.height);
 
-            // Use the stored rotation angle instead of recalculating it
-            this.game.ctx.rotate(this.rotation + Math.PI / 2); // Fixed rotation of the bullet
+            // Use the stored rotation angle
+            this.game.ctx.rotate(this.rotation + Math.PI / 2); // Rotate the bolt
 
             // Draw the bolt as a rectangle
             this.game.ctx.beginPath();
             this.game.ctx.fillStyle = "cyan";
-
             this.game.ctx.rect(-this.width / 2, -this.height / 2, this.width, this.height);
-
             this.game.ctx.fill();
             this.game.ctx.restore();
         }

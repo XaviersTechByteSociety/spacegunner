@@ -13,7 +13,10 @@ export default class Gun {
         // Handle touch controls
         const shootButton = document.querySelector('.shoot');
         shootButton.addEventListener('touchstart', (event) => {
-            event.preventDefault(); // Prevent default touch behavior
+            if (event.cancelable) {
+                event.preventDefault();
+              }
+            // event.preventDefault(); // Prevent default touch behavior
             if (this.canShoot) {
                 this.shoot(); // Fire immediately when touched
                 this.canShoot = false; // Prevent continuous shooting

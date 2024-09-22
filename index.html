@@ -13,12 +13,20 @@
 </head>
 
 <body>
-    <!-- <div id="startUpScreen">
+    <div id="turnYourDevice" class="">
+        <p>Please turn your device</p>
+    </div>
+    <div id="startUpScreen">
+        <div class="card">
+            <div class="card-content">SPACE GUNNER</div>
+            <div class="card-content card-back">SPACE GUNNER</div>
+        </div>
         <button id="start">PUSH START</button>
-    </div> -->
-    <canvas id="canvas" class=""></canvas>
+        <canvas id="startUpCanvas"></canvas>
+    </div>
+    <canvas id="canvas" class="none"></canvas>
 
-    <div class="gameControls">
+    <div class="gameControls none">
         <div class="movementControls">
             <button class="up press-start-2p-regular">
                 U
@@ -37,7 +45,7 @@
         </div>
     </div>
 
-    <div class="onscreenControls">
+    <div class="onscreenControls none">
         <button id="fullScreenButton" class="press-start-2p-regular">F</button>
         <button id="resetButton" class="press-start-2p-regular">R</button>
     </div>

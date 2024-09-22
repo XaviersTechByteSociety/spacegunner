@@ -5,24 +5,26 @@ export default class Star {
         this.y;
         this.z;
         this.radius = Math.random() * 2 + 1; // Random radius between 2 and 7
-        this.speed = 15; // Speed at which stars move towards the screen
+        this.speed = Math.random() * 10 + 2; // Speed based on Z-depth
         this.available = true;
+        this.z = Math.random() * this.game.width * 2; // Simulate depth with a random Z-distance
     }
 
     start() {
         this.available = false;
-        this.x = Math.random() * this.game.width - this.game.width / 2; // Reset X near the center
-        this.y = Math.random() * this.game.height - this.game.height / 2; // Reset Y near the center
-        this.z = Math.random() * this.game.width; // Reset Z (depth)
+        this.x = Math.random() * this.game.width - this.game.width / 2; // X near the center
+        this.y = Math.random() * this.game.height - this.game.height / 2; // Y near the center
+        this.z = Math.random() * this.game.width * 2; // Random depth from far away to close
     }
 
     reset() {
         this.available = true;
+        this.z = Math.random() * this.game.width * 2; // Reset depth to a faraway value
     }
 
     update(deltaTime) {
         if (!this.available) {
-            this.z -= this.speed * 100 * deltaTime / 1000; // Decrease Z to make the stars move forward
+            this.z -= this.speed * 100 * deltaTime / 1000; // Stars move faster as they get closer
             if (this.z <= 0) {
                 this.reset(); // Reset star if it reaches the front
             }

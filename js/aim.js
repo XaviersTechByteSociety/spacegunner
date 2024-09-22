@@ -1,12 +1,16 @@
 export default class Aim {
     constructor(game) {
         this.game = game;
-        this.height = 50;
-        this.width = 50;
+        this.height = 70;
+        this.width = 70;
         this.x = (this.game.width / 2);
         this.y = (this.game.height / 2);
         this.speedX = 600;
         this.speedY = 600;
+
+        // Image
+        this.image = new Image();
+        this.image.src = '../crosshair.png'
 
         // State for button presses
         this.movingUp = false;
@@ -47,7 +51,8 @@ export default class Aim {
         this.game.ctx.save();
         this.game.ctx.beginPath();
         this.game.ctx.strokeStyle = 'cyan';
-        this.game.ctx.rect(this.x, this.y, this.height, this.width);
+        this.game.ctx.drawImage(this.image, this.x, this.y, this.width, this.height)
+        // this.game.ctx.rect(this.x, this.y, this.height, this.width);
         this.game.ctx.stroke();
         this.game.ctx.restore();
     }

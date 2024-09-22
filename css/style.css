@@ -27,6 +27,15 @@ body {
     translate: -50% -50%;
 }
 
+#startUpCanvas {
+    background-color: black;
+    border: 1px solid black;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+}
+
 
 /* Container for all controls */
 .gameControls {
@@ -115,7 +124,7 @@ body {
     right: 0;
     margin-inline: auto;
 
-    display: flex;
+    /* display: flex; */
     justify-content: space-between;
     gap: 10px;
     width: 95%;
@@ -141,9 +150,92 @@ body {
     background-color: rgba(0, 0, 0, 0.9);
 }
 
-#startUpScreen {
+#turnYourDevice {
+    height: 100svh;
     display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#startUpScreen {
     height: 100svh;
     justify-content: center;
     align-items: center;
+}
+
+#start {
+    position: absolute;
+    z-index: 100;
+    border: 2px solid cyan;
+    outline: transparent;
+    border-radius: .15rem;
+    background: transparent;
+    color: cyan;
+    padding: 1rem 2rem;
+    top: 75%;
+    left: 50%;
+    translate: -50% -50%;
+    transition: 1s ease-in-out;
+}
+
+#start:hover {
+    scale: 1.2;
+}
+
+
+@media screen and (orientation: portrait) {
+    #startUpScreen {
+        display: none;
+    }
+}
+@media screen and (orientation: landscape) {
+    #turnYourDevice {
+        display: none;
+    }
+}
+
+.card {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    translate: -50% -50%;
+    z-index: 100;
+    width: 20rem;
+    height: 7rem;
+    background: transparent;
+    border: 2px solid cyan;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transform-style: preserve-3d; /* Ensures children are in 3D space */
+    animation: rotateCard 7s linear; /* Continuous rotation */
+}
+
+@keyframes rotateCard {
+    0% {
+        transform: rotateX(0deg);
+        scale: 0;
+    }
+    50% {
+        transform: rotateX(1260deg); /* 14 turns (14 * 180deg = 2520deg) */
+    }
+    100% {
+        transform: rotateX(2520deg); /* 28 turns */
+        scale: 1;
+    }
+}
+
+.card-content {
+    position: absolute;
+    backface-visibility: hidden; /* Hides the back side */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    font-size: 24px;
+    color: cyan;
+}
+
+.card-back {
+    transform: rotateX(180deg); /* Back side rotated */
+    background: transparent; /* Different color for the back */
+
 }
