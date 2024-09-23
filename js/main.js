@@ -10,75 +10,143 @@ window.addEventListener('load', () => {
     const onscreenControls = document.querySelector('.onscreenControls');
     const startUpScreen = document.querySelector('#startUpScreen');
     const start = document.querySelector('#start');
+    const gameOverScreen = document.querySelector('#gameOverScreen');
+    const restart = document.querySelector('#restart');
+
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     startUpCanvas.width = window.innerWidth;
     startUpCanvas.height = window.innerHeight;
 
-    startScreen()
+    let isGameStarted = false;
+    let startup = null;
+    let game = null;
 
-    // 
-    start.disabled = false;
+    startScreen();
 
-
-    // Handle start game
+    // Handle start and restart
     start.addEventListener('click', startGame);
+    restart.addEventListener('click', restartGame)
 
-
-   
 
     // // ------------ FUNCTION DEFINITIONS ---------------
     // Function to check if its a mobile device
     function isMobileDevice() {
         return /Mobi|Android/i.test(navigator.userAgent);
     }
-    function toggleFullScreen() {
+    function fullScreen() {
         if (!document.fullscreenElement) {
             document.documentElement.requestFullscreen();
-        } else if (document.exitFullscreen) {
-            document.exitFullscreen();
         }
     }
 
     // Startup Screen
+    // function startScreen() {
+    //     startUpScreen.classList.add('flex');
+    //     gameOverScreen.classList.add('none');
+    //     startup = new Startup(startUpCanvas, startUpCanvasCtx);
+    //     let lastTime = 0;
+    //     function animate(timeStamp) {
+    //         const deltaTime = timeStamp - lastTime;
+    //         lastTime = timeStamp;
+    //         if (startup) {
+    //             startUpCanvasCtx.clearRect(0, 0, startUpCanvas.width, startUpCanvas.height);
+    //             startup.render(deltaTime);
+    //             requestAnimationFrame(animate);
+    //         }
+    //     }
+    //     animate();
+    // }
     function startScreen() {
-        const startup = new Startup(startUpCanvas, startUpCanvasCtx);
+        startUpScreen.classList.add('flex');
+        gameOverScreen.classList.add('none');
+        startup = new Startup(startUpCanvas, startUpCanvasCtx);
+        animateStartup();
+    }
+
+    function animateStartup() {
         let lastTime = 0;
         function animate(timeStamp) {
             const deltaTime = timeStamp - lastTime;
             lastTime = timeStamp;
-            startUpCanvasCtx.clearRect(0, 0, startUpCanvas.width, startUpCanvas.height);
-            startup.render(deltaTime);
-            requestAnimationFrame(animate);
+            if (startup) {
+                startUpCanvasCtx.clearRect(0, 0, startUpCanvas.width, startUpCanvas.height);
+                startup.render(deltaTime);
+                requestAnimationFrame(animate);
+            }
         }
         animate();
     }
 
+    // End the game.
+    function endGame() {
+        if (game) {
+            game.destroy();
+            game = null;
+        }
+        if (canvas.classList.contains('block')) {
+            canvas.classList.remove('block');
+            canvas.classList.add('none');
+        }
+        if (gameOverScreen.classList.contains('none')) {
+            gameOverScreen.classList.remove('none');
+            gameOverScreen.classList.add('flex');
+        }
+        if (onscreenControls.classList.contains('flex')) {
+            onscreenControls.classList.remove('flex');
+            onscreenControls.classList.add('none');
+        }
+        if (isMobileDevice()) {
+            gameControls.classList.remove('flex', 'none');
+            gameControls.classList.add('flex');
+        } else {
+            gameControls.classList.remove('flex', 'none');
+            gameControls.classList.add('none');
+        }
+    }
+
+    // Restart Game
+    function restartGame() {
+        isGameStarted = false;
+        if (gameOverScreen.classList.contains('flex')) {
+            gameOverScreen.classList.remove('flex');
+            gameOverScreen.classList.add('none');
+        }
+        
+        startGame();
+    }
 
     // Start the game
-    let isGameStarted = false;
     function startGame() {
-        if(isGameStarted) return; // prevent restarting the game
+        if (isGameStarted) return; // prevent restarting the game
 
+        isGameStarted = true;
         start.disabled = true;
-        toggleFullScreen();
+        fullScreen();
+
+        // delete startup;
+        if (startup) {
+            startup.destroy();
+            startup = null;
+        }
         if (startUpScreen.classList.contains('flex')) {
             startUpScreen.classList.remove('flex');
             startUpScreen.classList.add('none');
         }
-        startUpScreen.classList.add('none');
         if (canvas.classList.contains('none')) {
             canvas.classList.remove('none');
             canvas.classList.add('block')
-            onscreenControls.classList.remove('none');
-            onscreenControls.classList.add('flex');
+            if (onscreenControls.classList.contains('none')) {
+                onscreenControls.classList.remove('none');
+                onscreenControls.classList.add('flex');
+            }
             if (isMobileDevice()) {
                 gameControls.classList.remove('flex', 'none');
                 gameControls.classList.add('flex');
             } else {
                 gameControls.classList.remove('flex', 'none');
                 gameControls.classList.add('none');
-            }        
+            }
         }
         initGame()
     }
@@ -86,12 +154,17 @@ window.addEventListener('load', () => {
 
     // Initialize the game, create the game object
     function initGame() {
-        const game = new Game(canvas, ctx);
+        game = new Game(canvas, ctx);
         let lastTime = 0;
         function animate(timeStamp) {
             const deltaTime = timeStamp - lastTime;
             lastTime = timeStamp;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+            if (game.checkGameOver()) {
+                console.log('gameover');
+                endGame()
+                return;
+            }
             game.render(deltaTime);
             requestAnimationFrame(animate);
         }

@@ -157,47 +157,48 @@ body {
     align-items: center;
 }
 #startUpScreen {
+    position: absolute;
+    z-index: 100;
+    flex-direction: column;
     height: 100svh;
     justify-content: center;
     align-items: center;
+    height: 100svh;
+    justify-content: center;
+    align-items: center;
+    background: transparent;
+    width: 100%;
+    gap: 5rem;
 }
 
 #start {
-    position: absolute;
     z-index: 100;
+
+}
+.button{
     border: 2px solid cyan;
     outline: transparent;
     border-radius: .15rem;
     background: transparent;
     color: cyan;
     padding: 1rem 2rem;
-    top: 75%;
-    left: 50%;
-    translate: -50% -50%;
-    transition: 1s ease-in-out;
+    /* top: 75%;
+    left: 50%; */
+    /* translate: -50% -50%; */
+    transition: .2s ease-in-out;
 }
 
-#start:hover {
+#game-over {
+    color: cyan;
+    padding: 2rem;
+}
+
+.button:hover {
     scale: 1.2;
 }
 
 
-@media screen and (orientation: portrait) {
-    #startUpScreen {
-        display: none;
-    }
-}
-@media screen and (orientation: landscape) {
-    #turnYourDevice {
-        display: none;
-    }
-}
-
 .card {
-    position: absolute;
-    top: 40%;
-    left: 50%;
-    translate: -50% -50%;
     z-index: 100;
     width: 20rem;
     height: 7rem;
@@ -223,7 +224,6 @@ body {
 }
 
 .card-content {
-    position: absolute;
     backface-visibility: hidden; /* Hides the back side */
     display: flex;
     justify-content: center;
@@ -238,4 +238,27 @@ body {
     transform: rotateX(180deg); /* Back side rotated */
     background: transparent; /* Different color for the back */
 
+}
+
+#gameOverScreen {
+    background: black;
+    height: 100svh;
+    /* display: flex; */
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+
+}
+
+
+@media screen and (orientation: portrait) {
+    #startUpScreen {
+        display: none;
+    }
+}
+@media screen and (orientation: landscape) {
+    #turnYourDevice {
+        display: none;
+    }
 }

@@ -42,27 +42,27 @@ export default class Game {
         // this.toggleFullScreen();
 
         // Debounced resize function
-        window.addEventListener('resize', this.debounce((e) => {
-            this.resize(e.target.innerWidth, e.target.innerHeight);
-        }, 100));
-        window.addEventListener('keydown', e => {
-            if (this.keys.indexOf(e.key) === -1) {
-                this.keys.push(e.key);
-            }
-        })
-        window.addEventListener('keyup', e => {
-            const index = this.keys.indexOf(e.key);
-            if (index > -1) {
-                this.keys.splice(index, 1);
-            }
-        })
+        // window.addEventListener('resize', this.debounce((e) => {
+        //     this.resize(e.target.innerWidth, e.target.innerHeight);
+        // }, 100));
+        // window.addEventListener('keydown', e => {
+        //     if (this.keys.indexOf(e.key) === -1) {
+        //         this.keys.push(e.key);
+        //     }
+        // })
+        // window.addEventListener('keyup', e => {
+        //     const index = this.keys.indexOf(e.key);
+        //     if (index > -1) {
+        //         this.keys.splice(index, 1);
+        //     }
+        // })
 
-        document.querySelector('#fullScreenButton').addEventListener('click', () => {
-            this.toggleFullScreen();
-        })
-        document.querySelector('#resetButton').addEventListener('click', () => {
-            window.location.reload();
-        })
+        // document.querySelector('#fullScreenButton').addEventListener('click', () => {
+        //     this.toggleFullScreen();
+        // })
+        // document.querySelector('#resetButton').addEventListener('click', () => {
+        //     window.location.reload();
+        // })
     }
 
 
@@ -87,7 +87,71 @@ export default class Game {
     }
     start() {
         this.resize(window.innerWidth, window.innerHeight);
+        this.addEventListeners();
     }
+    // Cleanup method
+    checkGameOver() {
+        if (this.life <= 9) {
+            return true;
+        }
+        return false;
+    }
+    destroy() {
+        // Clear arrays that hold object instances
+        this.boltPool = [];
+        this.enemyPool = [];
+        this.starPool = [];
+
+        // Remove event listeners
+        window.removeEventListener('resize', this.debounceResize);
+        window.removeEventListener('keydown', this.keydownListener);
+        window.removeEventListener('keyup', this.keyupListener);
+        document.querySelector('#fullScreenButton').removeEventListener('click', this.fullScreenListener);
+        document.querySelector('#resetButton').removeEventListener('click', this.resetListener);
+
+        // Nullify key objects
+        this.aim = null;
+        this.gun = null;
+        this.gun2 = null;
+
+        // Nullify canvas and context
+        this.canvas = null;
+        this.ctx = null;
+    }
+
+    // Add references to the listeners so they can be removed later
+    addEventListeners() {
+        this.debounceResize = this.debounce((e) => {
+            this.resize(e.target.innerWidth, e.target.innerHeight);
+        }, 100);
+
+        this.keydownListener = (e) => {
+            if (this.keys.indexOf(e.key) === -1) {
+                this.keys.push(e.key);
+            }
+        };
+        this.keyupListener = (e) => {
+            const index = this.keys.indexOf(e.key);
+            if (index > -1) {
+                this.keys.splice(index, 1);
+            }
+        };
+
+        this.fullScreenListener = () => {
+            this.toggleFullScreen();
+        };
+
+        this.resetListener = () => {
+            window.location.reload();
+        };
+
+        window.addEventListener('resize', this.debounceResize);
+        window.addEventListener('keydown', this.keydownListener);
+        window.addEventListener('keyup', this.keyupListener);
+        document.querySelector('#fullScreenButton').addEventListener('click', this.fullScreenListener);
+        document.querySelector('#resetButton').addEventListener('click', this.resetListener);
+    }
+
     resize(width, height) {
         this.canvas.width = width;
         this.canvas.height = height;
@@ -102,12 +166,12 @@ export default class Game {
         const rect1Right = rect1.x + rect1.width;
         const rect1Top = rect1.y;
         const rect1Bottom = rect1.y + rect1.height;
-        
+
         const rect2Left = rect2.x;
         const rect2Right = rect2.x + rect2.width;
         const rect2Top = rect2.y;
         const rect2Bottom = rect2.y + rect2.height;
-        
+
         // Check for overlap
         if (rect1Right < rect2Left || // Rect1 is to the left of Rect2
             rect1Left > rect2Right || // Rect1 is to the right of Rect2
@@ -115,10 +179,10 @@ export default class Game {
             rect1Top > rect2Bottom) { // Rect1 is below Rect2
             return false; // No collision
         }
-        
+
         return true; // Collision detected
     }
-    
+
     getAngle(obj1X, obj1Y, obj2X, obj2Y) {
         const dx = obj1X - obj2X;
         const dy = obj1Y - obj2Y;

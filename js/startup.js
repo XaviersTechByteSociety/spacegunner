@@ -38,6 +38,10 @@ export default class Startup {
     start() {
         this.resize(window.innerWidth, window.innerHeight);
     }
+    destroy() {
+        this.starPool = [];
+        window.removeEventListener('resize', this.resizeHandler);
+    }
     resize(width, height) {
         this.canvas.width = width;
         this.canvas.height = height;
