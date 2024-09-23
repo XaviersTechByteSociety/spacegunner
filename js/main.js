@@ -98,9 +98,6 @@ window.addEventListener('load', () => {
         }
         if (isMobileDevice()) {
             gameControls.classList.remove('flex', 'none');
-            gameControls.classList.add('flex');
-        } else {
-            gameControls.classList.remove('flex', 'none');
             gameControls.classList.add('none');
         }
     }
