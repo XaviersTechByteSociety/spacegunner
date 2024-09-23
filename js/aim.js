@@ -10,7 +10,7 @@ export default class Aim {
 
         // Image
         this.image = new Image();
-        this.image.src = '../crosshair.png'
+        this.image.src = './assets/crosshair.png'
 
         // State for button presses
         this.movingUp = false;

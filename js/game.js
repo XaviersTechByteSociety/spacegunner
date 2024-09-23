@@ -91,7 +91,7 @@ export default class Game {
     }
     // Cleanup method
     checkGameOver() {
-        if (this.life <= 9) {
+        if (this.life <= 0) {
             return true;
         }
         return false;
