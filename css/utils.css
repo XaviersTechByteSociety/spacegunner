@@ -10,10 +10,18 @@
     display: block;
 }
 
-.bg-black {
-    background-color: green;
+.bg-red {
+    background-color: #970000;
 }
-
+.bg-red-active {
+    background-color: #ff1e1e;
+}
+.bg-blue {
+    background-color: #004594;
+}
+.bg-blue-active {
+    background-color: #1c86ff;
+}
 .bg-white {
     background-color: white;
 }

@@ -27,10 +27,6 @@ export default class Gun {
         const bolt = this.game.getBolt(); // Assuming getBolt() gets a free bolt from the pool
 
         if (bolt) {
-            document.querySelector('.shoot').classList.remove('bg-black', 'bg-white')
-            document.querySelector('.shoot').classList.add('bg-black')
-            // document.querySelector('.shoot').classList.remove('bg-black', 'bg-white')
-            // document.querySelector('.shoot').classList.add('bg-white')
             // Calculate the angle between the gun tip and the aim
             const angle = this.game.getAngle(this.game.aim.x + this.game.aim.width / 2, this.game.aim.y + this.game.aim.height / 2, this.x, this.y - this.height);
 

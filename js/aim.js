@@ -5,8 +5,8 @@ export default class Aim {
         this.width = 70;
         this.x = (this.game.width / 2);
         this.y = (this.game.height / 2);
-        this.speedX = 700;
-        this.speedY = 700;
+        this.speedX = 600;
+        this.speedY = 600;
 
         // Image
         this.image = new Image();

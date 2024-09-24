@@ -138,22 +138,60 @@ export default class Game {
         window.addEventListener('keyup', this.keyupListener);
         document.querySelector('#fullScreenButton').addEventListener('click', this.fullScreenListener);
         document.querySelector('#resetButton').addEventListener('click', this.resetListener);
-        document.querySelector('.up').addEventListener('touchstart', () => this.movingUp = true);
-        document.querySelector('.up').addEventListener('touchend', () => this.movingUp = false);
-        document.querySelector('.down').addEventListener('touchstart', () => this.movingDown = true);
-        document.querySelector('.down').addEventListener('touchend', () => this.movingDown = false);
-        document.querySelector('.left').addEventListener('touchstart', () => this.movingLeft = true);
-        document.querySelector('.left').addEventListener('touchend', () => this.movingLeft = false);
-        document.querySelector('.right').addEventListener('touchstart', () => this.movingRight = true);
-        document.querySelector('.right').addEventListener('touchend', () => this.movingRight = false);
+        const up = document.querySelector('.up');
+        up.addEventListener('touchstart', () => {
+            up.classList.remove('bg-blue', 'bg-blue-active');
+            up.classList.add('bg-blue-active')
+            this.movingUp = true;
+        } )
+        up.addEventListener('touchend', () => {
+            up.classList.remove('bg-blue', 'bg-blue-active');
+            up.classList.add('bg-blue')
+            this.movingUp = false;
+        } )
+        const down = document.querySelector('.down');
+        down.addEventListener('touchstart', () => {
+            down.classList.remove('bg-blue', 'bg-blue-active');
+            down.classList.add('bg-blue-active')
+            this.movingDown = true;
+        } )
+        down.addEventListener('touchend', () => {
+            down.classList.remove('bg-blue', 'bg-blue-active');
+            down.classList.add('bg-blue')
+            this.movingDown = false;
+        } )
+        const left = document.querySelector('.left');
+        left.addEventListener('touchstart', () => {
+            left.classList.remove('bg-blue', 'bg-blue-active');
+            left.classList.add('bg-blue-active')
+            this.movingLeft = true;
+        } )
+        left.addEventListener('touchend', () => {
+            left.classList.remove('bg-blue', 'bg-blue-active');
+            left.classList.add('bg-blue')
+            this.movingLeft = false;
+        } )
+        const right = document.querySelector('.right');
+        right.addEventListener('touchstart', () => {
+            right.classList.remove('bg-blue', 'bg-blue-active');
+            right.classList.add('bg-blue-active')
+            this.movingRight = true;
+        } )
+        right.addEventListener('touchend', () => {
+            right.classList.remove('bg-blue', 'bg-blue-active');
+            right.classList.add('bg-blue')
+            this.movingRight = false;
+        } )
         // Handle touch controls
         const shootButton = document.querySelector('.shoot');
         shootButton.addEventListener('touchstart', (event) => {
             if (event.cancelable) {
                 event.preventDefault();
             }
+            // Shoot button bg color
+            shootButton.classList.remove('bg-red', 'bg-red-active')
+            shootButton.classList.add('bg-red-active');
             // Check and shoot for both guns
-
             if (this.gun.canShoot) {
                 this.gun.shoot(); // Fire gun1
                 this.gun.canShoot = false; // Prevent continuous shooting for gun1
@@ -168,8 +206,9 @@ export default class Game {
             if (event.cancelable) {
                 event.preventDefault();
             }
-            shootButton.classList.remove('bg-black', 'bg-white')
-            shootButton.classList.add('bg-white')
+            // Reset shoot button bg color
+            shootButton.classList.remove('bg-red', 'bg-red-active');
+            shootButton.classList.add('bg-red');
             this.gun.canShoot = true; // Allow shooting again when the touch ends
             this.gun2.canShoot = true; // Allow shooting again when the touch ends
         });
