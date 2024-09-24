@@ -25,7 +25,7 @@ window.addEventListener('load', () => {
     startScreen();
 
     // Handle start and restart
-    start.addEventListener('click', startGame);
+    start.addEventListener('click', startGame)
     restart.addEventListener('click', restartGame)
 
 
@@ -39,24 +39,6 @@ window.addEventListener('load', () => {
             document.documentElement.requestFullscreen();
         }
     }
-
-    // Startup Screen
-    // function startScreen() {
-    //     startUpScreen.classList.add('flex');
-    //     gameOverScreen.classList.add('none');
-    //     startup = new Startup(startUpCanvas, startUpCanvasCtx);
-    //     let lastTime = 0;
-    //     function animate(timeStamp) {
-    //         const deltaTime = timeStamp - lastTime;
-    //         lastTime = timeStamp;
-    //         if (startup) {
-    //             startUpCanvasCtx.clearRect(0, 0, startUpCanvas.width, startUpCanvas.height);
-    //             startup.render(deltaTime);
-    //             requestAnimationFrame(animate);
-    //         }
-    //     }
-    //     animate();
-    // }
     function startScreen() {
         startUpScreen.classList.add('flex');
         gameOverScreen.classList.add('none');
@@ -117,14 +99,18 @@ window.addEventListener('load', () => {
     function startGame() {
         if (isGameStarted) return; // prevent restarting the game
 
+        fullScreen();
         isGameStarted = true;
         start.disabled = true;
-        fullScreen();
 
         // delete startup;
         if (startup) {
             startup.destroy();
             startup = null;
+        }
+        if (game) {
+            game.destroy();
+            game = null;
         }
         if (startUpScreen.classList.contains('flex')) {
             startUpScreen.classList.remove('flex');
@@ -158,7 +144,6 @@ window.addEventListener('load', () => {
             lastTime = timeStamp;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             if (game.checkGameOver()) {
-                console.log('gameover');
                 endGame()
                 return;
             }

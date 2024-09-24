@@ -1,5 +1,5 @@
-import Aim from "./aim.js";
 import Gun from "./gun.js";
+import Aim from "./aim.js";
 import Bolt from "./bolt.js";
 import Enemy from "./enemy.js";
 import Star from "./star.js";
@@ -12,14 +12,19 @@ export default class Game {
         this.width = canvas.width;
         this.height = canvas.height;
 
+        this.gunX = this.width * .25;
+        this.gun2X = this.width * .75;
+
         this.aim = new Aim(this, 100);
-        this.gun = new Gun(this, this.width * .25);
-        this.gun2 = new Gun(this, this.width * .75);
-        this.star = new Star(this)
+        this.gun = new Gun(this);
+        this.gun2 = new Gun(this);
+        this.gun.x = this.gunX;
+        this.gun2.x = this.gun2X;
+        this.star = new Star(this);
 
         this.boltPool = [];
         this.numberOfbolt = 500;
-        this.createboltPool();
+        this.createBoltPool();
         this.score = 0;
         this.life = 10;
 
@@ -38,31 +43,15 @@ export default class Game {
 
         this.keys = [];
 
+        // State for button presses
+        this.movingUp = false;
+        this.movingDown = false;
+        this.movingLeft = false;
+        this.movingRight = false;
+
+        // this.canShoot = true; // Whether a new bullet can be fired
+
         this.start();
-        // this.toggleFullScreen();
-
-        // Debounced resize function
-        // window.addEventListener('resize', this.debounce((e) => {
-        //     this.resize(e.target.innerWidth, e.target.innerHeight);
-        // }, 100));
-        // window.addEventListener('keydown', e => {
-        //     if (this.keys.indexOf(e.key) === -1) {
-        //         this.keys.push(e.key);
-        //     }
-        // })
-        // window.addEventListener('keyup', e => {
-        //     const index = this.keys.indexOf(e.key);
-        //     if (index > -1) {
-        //         this.keys.splice(index, 1);
-        //     }
-        // })
-
-        // document.querySelector('#fullScreenButton').addEventListener('click', () => {
-        //     this.toggleFullScreen();
-        // })
-        // document.querySelector('#resetButton').addEventListener('click', () => {
-        //     window.location.reload();
-        // })
     }
 
 
@@ -103,20 +92,19 @@ export default class Game {
         this.starPool = [];
 
         // Remove event listeners
-        window.removeEventListener('resize', this.debounceResize);
-        window.removeEventListener('keydown', this.keydownListener);
-        window.removeEventListener('keyup', this.keyupListener);
-        document.querySelector('#fullScreenButton').removeEventListener('click', this.fullScreenListener);
-        document.querySelector('#resetButton').removeEventListener('click', this.resetListener);
+        this.removeEventListeners();
 
         // Nullify key objects
-        this.aim = null;
-        this.gun = null;
-        this.gun2 = null;
+        // this.aim = null;
+        // this.gun = null;
+        // this.gun2 = null;
 
         // Nullify canvas and context
         this.canvas = null;
         this.ctx = null;
+
+        // this.gun.canShoot = true;
+        // this.gun2.canShoot = true;
     }
 
     // Add references to the listeners so they can be removed later
@@ -150,13 +138,75 @@ export default class Game {
         window.addEventListener('keyup', this.keyupListener);
         document.querySelector('#fullScreenButton').addEventListener('click', this.fullScreenListener);
         document.querySelector('#resetButton').addEventListener('click', this.resetListener);
+        document.querySelector('.up').addEventListener('touchstart', () => this.movingUp = true);
+        document.querySelector('.up').addEventListener('touchend', () => this.movingUp = false);
+        document.querySelector('.down').addEventListener('touchstart', () => this.movingDown = true);
+        document.querySelector('.down').addEventListener('touchend', () => this.movingDown = false);
+        document.querySelector('.left').addEventListener('touchstart', () => this.movingLeft = true);
+        document.querySelector('.left').addEventListener('touchend', () => this.movingLeft = false);
+        document.querySelector('.right').addEventListener('touchstart', () => this.movingRight = true);
+        document.querySelector('.right').addEventListener('touchend', () => this.movingRight = false);
+        // Handle touch controls
+        const shootButton = document.querySelector('.shoot');
+        shootButton.addEventListener('touchstart', (event) => {
+            if (event.cancelable) {
+                event.preventDefault();
+            }
+            // Check and shoot for both guns
+
+            if (this.gun.canShoot) {
+                this.gun.shoot(); // Fire gun1
+                this.gun.canShoot = false; // Prevent continuous shooting for gun1
+            }
+            if (this.gun2.canShoot) {
+                this.gun2.shoot(); // Fire gun2
+                this.gun2.canShoot = false; // Prevent continuous shooting for gun2
+            }
+        });
+        
+        shootButton.addEventListener('touchend', (event) => {
+            if (event.cancelable) {
+                event.preventDefault();
+            }
+            shootButton.classList.remove('bg-black', 'bg-white')
+            shootButton.classList.add('bg-white')
+            this.gun.canShoot = true; // Allow shooting again when the touch ends
+            this.gun2.canShoot = true; // Allow shooting again when the touch ends
+        });
     }
+
+    removeEventListeners() {
+        window.removeEventListener('resize', this.debounceResize);
+        window.removeEventListener('keydown', this.keydownListener);
+        window.removeEventListener('keyup', this.keyupListener);
+        document.querySelector('#fullScreenButton').removeEventListener('click', this.fullScreenListener);
+        document.querySelector('#resetButton').removeEventListener('click', this.resetListener);
+        document.querySelector('.up').removeEventListener('touchstart', this.movingUpStart);
+        document.querySelector('.up').removeEventListener('touchend', this.movingUpEnd);
+        document.querySelector('.down').removeEventListener('touchstart', this.movingUpStart);
+        document.querySelector('.down').removeEventListener('touchend', this.movingUpEnd);
+        document.querySelector('.left').removeEventListener('touchstart', this.movingUpStart);
+        document.querySelector('.left').removeEventListener('touchend', this.movingUpEnd);
+        document.querySelector('.right').removeEventListener('touchstart', this.movingUpStart);
+        document.querySelector('.right').removeEventListener('touchend', this.movingUpEnd);
+        document.querySelector('.shoot').removeEventListener('touchstart', this.movingUpStart);
+        document.querySelector('.shoot').removeEventListener('touchend', this.movingUpEnd);
+    }
+
 
     resize(width, height) {
         this.canvas.width = width;
         this.canvas.height = height;
         this.width = width;
         this.height = height;
+        this.aim.x = (this.width / 2) - (this.aim.width / 2);
+        this.aim.y = (this.height / 2) - (this.aim.height / 2);
+        this.gun.y = this.height + this.gun.height;
+        this.gun2.y = this.height + this.gun2.height;
+        this.gunX = this.width * .25;
+        this.gun2X = this.width * .75;
+        this.gun.x = this.gunX;
+        this.gun2.x = this.gun2X;
     }
 
     // game logic : Calculation functions
@@ -196,7 +246,7 @@ export default class Game {
     }
 
     // Bolt creation
-    createboltPool() {
+    createBoltPool() {
         for (let i = 0; i < this.numberOfbolt; i++) {
             this.boltPool.push(new Bolt(this))
         }

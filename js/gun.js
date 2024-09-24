@@ -1,32 +1,13 @@
 export default class Gun {
-    constructor(game, x) {
+    constructor(game) {
         this.game = game;
         this.width = 10;
         this.height = 150;
-        this.x = x;
+        this.x;
         this.y = this.game.height + this.height;
-        this.bulletTimer = 0;
-        this.bulletInterval = 100; // Delay between shots (not used since we are controlling single shots)
-
-        this.canShoot = true; // Whether a new bullet can be fired
-
-        // Handle touch controls
-        const shootButton = document.querySelector('.shoot');
-        shootButton.addEventListener('touchstart', (event) => {
-            if (event.cancelable) {
-                event.preventDefault();
-              }
-            // event.preventDefault(); // Prevent default touch behavior
-            if (this.canShoot) {
-                this.shoot(); // Fire immediately when touched
-                this.canShoot = false; // Prevent continuous shooting
-            }
-        });
-
-        shootButton.addEventListener('touchend', (event) => {
-            event.preventDefault(); // Prevent default touch behavior
-            this.canShoot = true; // Allow shooting again when the touch ends
-        });
+        this.boltTimer = 0;
+        this.boltInterval = 100; // Delay between shots (not used since we are controlling single shots)
+        this.canShoot = true; // Whether a new bolt can be fired
     }
 
     update() {
@@ -42,14 +23,18 @@ export default class Gun {
     }
 
     shoot() {
-        // Get a bullet from the pool
-        const bullet = this.game.getBolt(); // Assuming getBolt() gets a free bullet from the pool
+        // Get a bolt from the pool
+        const bolt = this.game.getBolt(); // Assuming getBolt() gets a free bolt from the pool
 
-        if (bullet) {
+        if (bolt) {
+            document.querySelector('.shoot').classList.remove('bg-black', 'bg-white')
+            document.querySelector('.shoot').classList.add('bg-black')
+            // document.querySelector('.shoot').classList.remove('bg-black', 'bg-white')
+            // document.querySelector('.shoot').classList.add('bg-white')
             // Calculate the angle between the gun tip and the aim
             const angle = this.game.getAngle(this.game.aim.x + this.game.aim.width / 2, this.game.aim.y + this.game.aim.height / 2, this.x, this.y - this.height);
 
-            // Tip of the gun where the bullet should spawn (accounting for the gun rotation)
+            // Tip of the gun where the bolt should spawn (accounting for the gun rotation)
             const gunTipX = this.x + Math.cos(angle);
             const gunTipY = this.y - this.height + Math.sin(angle);
 
@@ -58,8 +43,8 @@ export default class Gun {
             const vx = speed * Math.cos(angle); // Horizontal velocity
             const vy = speed * Math.sin(angle); // Vertical velocity (negative since it should move upwards)
 
-            // Start the bullet from the gun tip, with calculated velocity
-            bullet.start(gunTipX, gunTipY, vx, vy);
+            // Start the bolt from the gun tip, with calculated velocity
+            bolt.start(gunTipX, gunTipY, vx, vy);
         }
     }
 

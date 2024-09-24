@@ -5,41 +5,25 @@ export default class Aim {
         this.width = 70;
         this.x = (this.game.width / 2);
         this.y = (this.game.height / 2);
-        this.speedX = 600;
-        this.speedY = 600;
+        this.speedX = 700;
+        this.speedY = 700;
 
         // Image
         this.image = new Image();
         this.image.src = './assets/crosshair.png'
-
-        // State for button presses
-        this.movingUp = false;
-        this.movingDown = false;
-        this.movingLeft = false;
-        this.movingRight = false;
-
-        // Set up event listeners for button presses
-        document.querySelector('.up').addEventListener('touchstart', () => this.movingUp = true);
-        document.querySelector('.up').addEventListener('touchend', () => this.movingUp = false);
-        document.querySelector('.down').addEventListener('touchstart', () => this.movingDown = true);
-        document.querySelector('.down').addEventListener('touchend', () => this.movingDown = false);
-        document.querySelector('.left').addEventListener('touchstart', () => this.movingLeft = true);
-        document.querySelector('.left').addEventListener('touchend', () => this.movingLeft = false);
-        document.querySelector('.right').addEventListener('touchstart', () => this.movingRight = true);
-        document.querySelector('.right').addEventListener('touchend', () => this.movingRight = false);
     }
     update(deltaTime) {
         this.game.deltaTime = deltaTime;
         // Movement based on button state
-        if (this.movingUp) this.y -= this.speedY * deltaTime / 1000;
-        if (this.movingDown) this.y += this.speedY * deltaTime / 1000;
-        if (this.movingLeft) this.x -= this.speedX * deltaTime / 1000;
-        if (this.movingRight) this.x += this.speedX * deltaTime / 1000;
+        if (this.game.movingUp) this.y -= this.speedY * deltaTime / 1000;
+        if (this.game.movingDown) this.y += this.speedY * deltaTime / 1000;
+        if (this.game.movingLeft) this.x -= this.speedX * deltaTime / 1000;
+        if (this.game.movingRight) this.x += this.speedX * deltaTime / 1000;
 
         if (this.x > this.game.width - this.width) this.x = this.game.width - this.width;
-        if (this.x <= 0) this.x = this.width;
+        if (this.x <= 0) this.x = 0;
         if (this.y > this.game.height - this.height) this.y = this.game.height - this.height;
-        if (this.y <= 0) this.y = this.height;
+        if (this.y <= 0) this.y = 0;
 
         if (this.game.keys.includes('ArrowUp')) this.y -= this.speedY * deltaTime / 1000;
         if (this.game.keys.includes('ArrowDown')) this.y += this.speedY * deltaTime / 1000;
