@@ -47,7 +47,22 @@ window.addEventListener('load', () => {
     }
 
     function animateStartup() {
+        l     animateStartup();
+    }
+
+    function animateStartup() {
         let lastTime = 0;
+        function animate(timeStamp) {
+            const deltaTime = timeStamp - lastTime;
+            lastTime = timeStamp;
+            if (startup) {
+                startUpCanvasCtx.clearRect(0, 0, startUpCanvas.width, startUpCanvas.height);
+                startup.render(deltaTime);
+                requestAnimationFrame(animate);
+            }
+        }
+        animate();
+    }et lastTime = 0;
         function animate(timeStamp) {
             const deltaTime = timeStamp - lastTime;
             lastTime = timeStamp;
