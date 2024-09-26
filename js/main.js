@@ -63,7 +63,7 @@ window.addEventListener('load', () => {
         }
         animate();
     }
-    lastTime = 0;
+    let lastTime = 0;
     function animate(timeStamp) {
         const deltaTime = timeStamp - lastTime;
         lastTime = timeStamp;
