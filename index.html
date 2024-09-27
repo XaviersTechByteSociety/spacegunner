@@ -17,12 +17,12 @@
         <p>Please turn your device</p>
     </div>
 
-    <div id="startUpScreen" class="">
+    <div id="startUpScreen" class="press-start-2p-regular">
         <div class="card">
             <div class="card-content">SPACE GUNNER</div>
             <div class="card-content card-back"></div>
         </div>
-        <button id="start" class="button">PUSH START</button>
+        <button id="start" class="button press-start-2p-regular">PUSH START</button>
         <canvas id="startUpCanvas"></canvas>
     </div>
 
@@ -30,6 +30,39 @@
 
     <div id="gameOverScreen" class="none">
         <h1 id="game-over">Game Over</h1>
+        <p style="color: white;" class="z-100">highscore: <span class="z-100" id="highScore"></span></p>
+
+        <section id="leaderboard" class="leaderboard-section">
+            <div class="leaderboard-header">
+                <h2>Leaderboard</h2>
+                <p>Top players and their scores.</p>
+            </div>
+        
+            <div class="leaderboard-table-container">
+                <table class="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>Player</th>
+                            <th>Score</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-table">
+                        <!-- Example row, replace with dynamic data -->
+                        <!-- 
+                        <tr>
+                            <td>Jane Smith</td>
+                            <td>1300</td>
+                        </tr> 
+                        -->
+                        <!-- More rows go here -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        
+        <div id="signup-gameover" class="z-100">
+            <a href="./signup/signup.html" class="z-100 button">signup</a>
+        </div>
         <div id="restart" class="button">RESTART</div>
     </div>
 
@@ -57,7 +90,7 @@
         <button id="resetButton" class="press-start-2p-regular">R</button>
     </div>
 
-    <script src="js/main.js" type="module"></script>
+    <script src="dist/bundle.js" type="module"></script>
 </body>
 
 </html>

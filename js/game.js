@@ -26,12 +26,14 @@ export default class Game {
         this.numberOfbolt = 500;
         this.createBoltPool();
         this.score = 0;
+        this.highScore = 0;
         this.life = 10;
+        this.name = null;
 
         this.enemyPool = [];
-        this.numberOfEnemies = 3000;
+        this.numberOfEnemies = 300;
         this.enemyTimer = 0;
-        this.enemyInterval = 500;
+        this.enemyInterval = 1000;
         this.createEnemyPool();
 
         this.starPool = [];
@@ -49,12 +51,16 @@ export default class Game {
         this.movingLeft = false;
         this.movingRight = false;
 
-        // this.canShoot = true; // Whether a new bullet can be fired
-
         this.start();
     }
 
-
+    calculateHighScore() {
+        if(this.score > this.highScore) {
+            this.highScore = this.score;
+        } else {
+            this.highScore = this.highScore;
+        }
+    }
     // Basic utility functions
     debounce(func, delay) {
         let timeout;
@@ -81,10 +87,12 @@ export default class Game {
     // Cleanup method
     checkGameOver() {
         if (this.life <= 0) {
+            
             return true;
         }
         return false;
     }
+
     destroy() {
         // Clear arrays that hold object instances
         this.boltPool = [];
@@ -143,45 +151,45 @@ export default class Game {
             up.classList.remove('bg-blue', 'bg-blue-active');
             up.classList.add('bg-blue-active')
             this.movingUp = true;
-        } )
+        })
         up.addEventListener('touchend', () => {
             up.classList.remove('bg-blue', 'bg-blue-active');
             up.classList.add('bg-blue')
             this.movingUp = false;
-        } )
+        })
         const down = document.querySelector('.down');
         down.addEventListener('touchstart', () => {
             down.classList.remove('bg-blue', 'bg-blue-active');
             down.classList.add('bg-blue-active')
             this.movingDown = true;
-        } )
+        })
         down.addEventListener('touchend', () => {
             down.classList.remove('bg-blue', 'bg-blue-active');
             down.classList.add('bg-blue')
             this.movingDown = false;
-        } )
+        })
         const left = document.querySelector('.left');
         left.addEventListener('touchstart', () => {
             left.classList.remove('bg-blue', 'bg-blue-active');
             left.classList.add('bg-blue-active')
             this.movingLeft = true;
-        } )
+        })
         left.addEventListener('touchend', () => {
             left.classList.remove('bg-blue', 'bg-blue-active');
             left.classList.add('bg-blue')
             this.movingLeft = false;
-        } )
+        })
         const right = document.querySelector('.right');
         right.addEventListener('touchstart', () => {
             right.classList.remove('bg-blue', 'bg-blue-active');
             right.classList.add('bg-blue-active')
             this.movingRight = true;
-        } )
+        })
         right.addEventListener('touchend', () => {
             right.classList.remove('bg-blue', 'bg-blue-active');
             right.classList.add('bg-blue')
             this.movingRight = false;
-        } )
+        })
         // Handle touch controls
         const shootButton = document.querySelector('.shoot');
         shootButton.addEventListener('touchstart', (event) => {
@@ -201,7 +209,7 @@ export default class Game {
                 this.gun2.canShoot = false; // Prevent continuous shooting for gun2
             }
         });
-        
+
         shootButton.addEventListener('touchend', (event) => {
             if (event.cancelable) {
                 event.preventDefault();
@@ -351,12 +359,27 @@ export default class Game {
 
     drawStatusText() {
         this.ctx.save();
-        this.ctx.beginPath()
+
+        // Set common style for both text
         this.ctx.fillStyle = 'cyan';
-        this.ctx.font = '15px Arial'
-        this.ctx.fillText(`score:  ${this.score}    |    life: ${this.life}`, this.canvas.width / 2, 35);
+        this.ctx.font = '13px "Press Start 2P"';
+
+        // Calculate the score and life position
+        const scoreLifeX = this.canvas.width * 0.10; // 10% from the left
+        const scoreLifeY = this.canvas.height * 0.06; // 6% from the top
+
+        this.ctx.fillText(`Score: ${this.score} | Life: ${this.life}`, scoreLifeX, scoreLifeY);
+
+        // Calculate name position
+        const nameX = this.canvas.width - this.ctx.measureText(`Name: ${(this.name) ? this.name : 'Guest'}`).width - 100; // 10 pixels from the right
+        const nameY = this.canvas.height * 0.06; // Same vertical position as score and life
+
+        this.ctx.fillText(`Name: ${(this.name) ? this.name : 'Guest'}`, nameX, nameY);
+
         this.ctx.restore();
     }
+
+
 
     // Game Render Function
     render(deltaTime) {

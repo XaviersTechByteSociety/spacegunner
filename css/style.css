@@ -246,9 +246,116 @@ body {
     justify-content: center;
     align-items: center;
     z-index: 100;
-
+    gap: 4rem;
 }
 
+.signup-container {
+    background-color: #1a1a1a; /* Dark card background */
+    padding: 30px;
+    border: 2px solid #00ffff; /* Neon cyan border */
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.5); /* Neon glow effect */
+    width: 350px;
+    box-shadow: .5rem .5rem 0 0 cyan;
+    text-align: center;
+}
+
+.signup-container h2 {
+    margin-bottom: 25px;
+    color: #00ffff; /* Neon cyan heading */
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.signup-container input[type="text"], 
+.signup-container input[type="email"], 
+.signup-container input[type="password"],
+.signup-container input[type="number"] {
+    width: 100%;
+    padding: 12px;
+    margin: 12px 0;
+    background-color: #333; /* Dark input background */
+    border: 2px solid #00ffff; /* Neon border */
+    color: #00ffff; /* Neon input text color */
+    border-radius: 6px;
+    box-shadow: inset 0 0 10px rgba(0, 255, 255, 0.4); /* Inner glow */
+}
+
+
+
+.signup-container p {
+    margin-top: 20px;
+    color: #00cccc; /* Slightly darker cyan */
+}
+
+.signup-container a {
+    color: #00ffff; /* Neon link */
+    text-decoration: none;
+}
+
+.signup-container a:hover {
+    text-decoration: underline;
+}
+/* Leaderboard styling */
+.leaderboard-section {
+    width: 90%;
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 15px;
+    background-color: #111;
+    border-radius: 6px;
+    color: #00ffff;
+    text-align: center;
+}
+
+.leaderboard-header {
+    margin-bottom: 15px;
+}
+
+.leaderboard-header h2 {
+    font-size: 20px;
+    margin: 0;
+}
+
+.leaderboard-header p {
+    font-size: 12px;
+    color: #bbb;
+    margin-top: 8px;
+}
+
+.leaderboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.leaderboard-table th, .leaderboard-table td {
+    padding: 10px;
+    border-bottom: 1px solid #333;
+}
+
+.leaderboard-table th {
+    font-size: 14px;
+    background-color: #222;
+    color: #00ffff;
+}
+
+.leaderboard-table td {
+    font-size: 13px;
+    color: #ddd;
+}
+
+.leaderboard-table tr:nth-child(even) {
+    background-color: #222;
+}
+
+.leaderboard-table tr:hover {
+    background-color: #333;
+}
+
+.signup-gameover a {
+    color: white;
+    text-decoration: none;
+}
 
 @media screen and (orientation: portrait) {
     #startUpScreen {

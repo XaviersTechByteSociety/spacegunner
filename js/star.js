@@ -38,10 +38,10 @@ export default class Star {
             const y = (this.y * scale) + this.game.height / 2; // Project Y
             const radius = this.radius * scale; // Scale radius based on Z-depth
 
-            this.game.ctx.beginPath();
-            this.game.ctx.arc(x, y, radius, 0, Math.PI * 2);
-            this.game.ctx.fillStyle = "white"; // Color of the stars
-            this.game.ctx.fill();
+            if (this.game.ctx) this.game.ctx.beginPath();
+            if (this.game.ctx) this.game.ctx.arc(x, y, radius, 0, Math.PI * 2);
+            if (this.game.ctx) this.game.ctx.fillStyle = "white"; // Color of the stars
+            if (this.game.ctx) this.game.ctx.fill();
         }
     }
 }

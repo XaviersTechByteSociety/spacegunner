@@ -5,8 +5,8 @@ export default class Startup {
         this.canvas = canvas;
         this.ctx = ctx;
 
-        this.width = canvas.width;
-        this.height = canvas.height;
+        this.width = (canvas) ? canvas.width : null;
+        this.height = (canvas) ? canvas.height : null;
 
         this.starPool = [];
         this.numberOfStars = 3000; // Define the number of stars you want to create
@@ -43,8 +43,8 @@ export default class Startup {
         window.removeEventListener('resize', this.resizeHandler);
     }
     resize(width, height) {
-        this.canvas.width = width;
-        this.canvas.height = height;
+        if (this.canvas) this.canvas.width = width;
+        if (this.canvas) this.canvas.height = height;
         this.width = width;
         this.height = height;
     }

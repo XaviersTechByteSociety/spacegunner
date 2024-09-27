@@ -1,22 +1,28 @@
 import Startup from "./startup.js";
 import Game from "./game.js";
+import { userCred } from "./authentication/authentication.js";
+import { getDocument, updateDocument, userHighScore, getLeaderboard } from "./database/database.js";
+import { auth } from "../firebase/firebase-conf.js";
 
 window.addEventListener('load', () => {
     const canvas = document.querySelector('#canvas');
     const startUpCanvas = document.querySelector('#startUpCanvas');
-    const ctx = canvas.getContext('2d');
-    const startUpCanvasCtx = startUpCanvas.getContext('2d');
+    const ctx = (canvas) ? canvas.getContext('2d') : null;
+    const startUpCanvasCtx = (startUpCanvas) ? startUpCanvas.getContext('2d') : null;
     const gameControls = document.querySelector('.gameControls');
     const onscreenControls = document.querySelector('.onscreenControls');
     const startUpScreen = document.querySelector('#startUpScreen');
     const start = document.querySelector('#start');
     const gameOverScreen = document.querySelector('#gameOverScreen');
     const restart = document.querySelector('#restart');
+    const highScoreSpan = document.querySelector('#highScore');
+    const singupGameover = document.querySelector('#signup-gameover');
+    const leaderboard = document.querySelector('#leaderboard');
 
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    startUpCanvas.width = window.innerWidth;
-    startUpCanvas.height = window.innerHeight;
+    if (canvas) canvas.width = window.innerWidth;
+    if (canvas) canvas.height = window.innerHeight;
+    if (startUpCanvas) startUpCanvas.width = window.innerWidth;
+    if (startUpCanvas) startUpCanvas.height = window.innerHeight;
 
     let isGameStarted = false;
     let startup = null;
@@ -25,12 +31,63 @@ window.addEventListener('load', () => {
     startScreen();
 
     // Handle start and restart
-    start.addEventListener('click', startGame)
-    restart.addEventListener('click', restartGame)
+    if (start) start.addEventListener('click', startGame)
+    if (restart) restart.addEventListener('click', restartGame)
+
+    // if (auth.currentUser) {
+    //     if(leaderboard) leaderboard.classList.remove('none', 'block');
+    //     if(leaderboard) leaderboard.classList.add('block');
+    //     if (singupGameover) singupGameover.classList.remove('none', 'block');
+    //     if (singupGameover) singupGameover.classList.add('none');
+    // } else {
+    //     if(leaderboard) leaderboard.classList.remove('none', 'block');
+    //     if(leaderboard) leaderboard.classList.add('none');
+    //     if (singupGameover) singupGameover.classList.remove('none', 'block');
+    //     if (singupGameover) singupGameover.classList.add('block')
+    // }
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            // User is signed in.
+            if (leaderboard) leaderboard.classList.remove('none', 'block');
+            if (leaderboard) leaderboard.classList.add('block');
+            if (singupGameover) singupGameover.classList.remove('none', 'block');
+            if (singupGameover) singupGameover.classList.add('none');
+    
+            // Populate leaderboard if necessary
+            populateLeaderboard();
+        } else {
+            // User is not signed in.
+            if (leaderboard) leaderboard.classList.remove('none', 'block');
+            if (leaderboard) leaderboard.classList.add('none');
+            if (singupGameover) singupGameover.classList.remove('none', 'block');
+            if (singupGameover) singupGameover.classList.add('block');
+        }
+    });
 
 
     // // ------------ FUNCTION DEFINITIONS ---------------
     // Function to check if its a mobile device
+
+    // Function to populate the leaderboard
+    function populateLeaderboard() {
+        const leaderboardTable = document.querySelector('#leaderboard-table');
+        leaderboardTable.innerHTML = ''; // Clear existing rows
+
+        // Fetch the leaderboard data
+        getLeaderboard().then((users) => {
+            users.forEach((user, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                <td>${user.displayName || 'Anonymous'}</td>
+                <td>${user.highScore}</td>
+            `;
+                leaderboardTable.appendChild(row);
+            });
+        }).catch(err => {
+            console.error("Failed to load leaderboard:", err);
+        });
+    }
+
     function isMobileDevice() {
         return /Mobi|Android/i.test(navigator.userAgent);
     }
@@ -40,8 +97,8 @@ window.addEventListener('load', () => {
         }
     }
     function startScreen() {
-        startUpScreen.classList.add('flex');
-        gameOverScreen.classList.add('none');
+        if (startUpScreen) startUpScreen.classList.add('flex');
+        if (gameOverScreen) gameOverScreen.classList.add('none');
         startup = new Startup(startUpCanvas, startUpCanvasCtx);
         animateStartup();
     }
@@ -56,7 +113,7 @@ window.addEventListener('load', () => {
             const deltaTime = timeStamp - lastTime;
             lastTime = timeStamp;
             if (startup) {
-                startUpCanvasCtx.clearRect(0, 0, startUpCanvas.width, startUpCanvas.height);
+                if (startUpCanvasCtx) startUpCanvasCtx.clearRect(0, 0, startUpCanvas.width, startUpCanvas.height);
                 startup.render(deltaTime);
                 requestAnimationFrame(animate);
             }
@@ -68,7 +125,7 @@ window.addEventListener('load', () => {
         const deltaTime = timeStamp - lastTime;
         lastTime = timeStamp;
         if (startup) {
-            startUpCanvasCtx.clearRect(0, 0, startUpCanvas.width, startUpCanvas.height);
+            if (startUpCanvasCtx) startUpCanvasCtx.clearRect(0, 0, startUpCanvas.width, startUpCanvas.height);
             startup.render(deltaTime);
             requestAnimationFrame(animate);
         }
@@ -78,6 +135,23 @@ window.addEventListener('load', () => {
 
     // End the game.
     function endGame() {
+        console.log(game.highScore, 'before');
+        game.calculateHighScore();
+
+        if (auth.currentUser)  {
+            updateDocument(userCred.uid, game.highScore).then(() => {
+                // Fetch the high score after updating
+                getDocument(userCred.uid).then(() => {
+                    if (gameOverScreen) highScoreSpan.innerText = userHighScore.highScore;
+    
+                    populateLeaderboard();
+                });
+            });
+        }
+
+        console.log(game.highScore, 'after');
+
+
         if (game) {
             game.destroy();
             game = null;
@@ -114,7 +188,6 @@ window.addEventListener('load', () => {
     // Start the game
     function startGame() {
         if (isGameStarted) return; // prevent restarting the game
-
         fullScreen();
         isGameStarted = true;
         start.disabled = true;
@@ -151,18 +224,25 @@ window.addEventListener('load', () => {
     }
 
 
-    // Initialize the game, create the game object
     function initGame() {
         game = new Game(canvas, ctx);
+        if (auth.currentUser) {
+            getDocument(userCred.uid).then(() => { // Wait for the document to be fetched
+                console.log('High Score:', userHighScore.highScore); // Log the fetched high score
+                game.highScore = userHighScore.highScore; // Set the game's high score
+            });
+        }
+
         let lastTime = 0;
         function animate(timeStamp) {
             const deltaTime = timeStamp - lastTime;
             lastTime = timeStamp;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             if (game.checkGameOver()) {
-                endGame()
+                endGame();
                 return;
             }
+            game.name = (userCred.name) ? userCred.name : null;
             game.render(deltaTime);
             requestAnimationFrame(animate);
         }
