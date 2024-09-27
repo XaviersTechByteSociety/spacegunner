@@ -80,7 +80,6 @@ function checkAuth() {
     onAuthStateChanged(auth, (user) => {
         if (user) {
             // User is logged in
-            console.log(user)
             userCred.uid = user.uid ? user.uid : null;
             userCred.name = user.displayName ? user.displayName : null;
         } else {

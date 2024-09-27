@@ -21,6 +21,7 @@ window.addEventListener('load', () => {
     const scoreSpan = document.querySelector('#score');
     const singupGameover = document.querySelector('#signup-gameover');
     const leaderboard = document.querySelector('#leaderboard');
+    const userName = document.querySelector('#userName');
 
     if (canvas) canvas.width = window.innerWidth;
     if (canvas) canvas.height = window.innerHeight;
@@ -52,6 +53,7 @@ window.addEventListener('load', () => {
     auth.onAuthStateChanged(user => {
         if (user) {
             // User is signed in.
+            userName.textContent = (userCred.name) ? userCred.name : 'N/A'; 
             if (leaderboard) leaderboard.classList.remove('none', 'block');
             if (leaderboard) leaderboard.classList.add('block');
             if (singupGameover) singupGameover.classList.remove('none', 'block');
@@ -61,6 +63,7 @@ window.addEventListener('load', () => {
             populateLeaderboard();
         } else {
             // User is not signed in.
+            userName.textContent = 'Guest';
             if (leaderboard) leaderboard.classList.remove('none', 'block');
             if (leaderboard) leaderboard.classList.add('none');
             if (singupGameover) singupGameover.classList.remove('none', 'block');

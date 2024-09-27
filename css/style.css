@@ -11,7 +11,6 @@
 }
 
 a {
-    text-decoration: none;
     color: cyan;
 }
 
@@ -517,13 +516,18 @@ body {
     padding: 0 1rem;
     height: 4rem;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-evenly;
     align-items: center;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     gap: 2rem;
+}
+
+#userName {
+    color: cyan;
+    font-size: .8rem;
 }
 
 @media screen and (orientation: portrait) {
