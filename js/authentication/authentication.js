@@ -47,37 +47,40 @@ if (logout) logout.addEventListener('click', () => {
 
 // +++++++++++++++++ FUNCTION DEFINITION +++++++++++++++++
 
-function registerUser(name, email, password, regNo) {
-    createUserWithEmailAndPassword(auth, email, password)
-        .then((cred) => {
-            // Update the profile with name
-            return updateProfile(cred.user, {
-                displayName: name,
-            }).then(() => {
-                // Pass the user object and regNo to addDocument
-                if(auth.currentUser) addDocument({ ...cred.user, regNo });
-            });
-        })
-        .then(() => {
-            window.location.href = 'https://space-gunner.netlify.app';
-        })
-        .catch((err) => {
-            console.error(err.message);
-        });
+async function registerUser(name, email, password, regNo) {
+    try {
+        // Create user with email and password
+        const cred = await createUserWithEmailAndPassword(auth, email, password);
+        
+        // Update profile with the name
+        await updateProfile(cred.user, { displayName: name });
+        
+        // Ensure addDocument creates a Firestore document
+        if (auth.currentUser) {
+            await addDocument({ ...cred.user, regNo });
+        }
+
+        // Redirect only after everything completes
+        window.location.href = 'https://space-gunner.netlify.app';
+    } catch (err) {
+        console.error(err.message);
     }
-    
-    function loginUser(email, password) {
-        signInWithEmailAndPassword(auth, email, password)
+}
+
+
+function loginUser(email, password) {
+    signInWithEmailAndPassword(auth, email, password)
         .then(cred => {
             window.location.href = 'https://space-gunner.netlify.app';
-    })
-    .catch(err => console.error(err.message))
+        })
+        .catch(err => console.error(err.message))
 }
 
 function checkAuth() {
     onAuthStateChanged(auth, (user) => {
         if (user) {
             // User is logged in
+            console.log(user)
             userCred.uid = user.uid ? user.uid : null;
             userCred.name = user.displayName ? user.displayName : null;
         } else {
