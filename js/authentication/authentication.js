@@ -1,8 +1,10 @@
-import { createUserWithEmailAndPassword, onAuthStateChanged, updateProfile, signOut } from "firebase/auth";
+import { createUserWithEmailAndPassword, onAuthStateChanged, updateProfile, signOut, signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from '../../firebase/firebase-conf';
 import { addDocument } from "../database/database";
 
 const signUpForm = document.querySelector('#sign-up');
+const logInForm = document.querySelector('#log-in');
+const logout = document.querySelector('#logout');
 export const userCred = {
     uid: null,
     name: null,
@@ -23,6 +25,23 @@ if (signUpForm) {
     })
 }
 
+if (logInForm) {
+    logInForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = logInForm.email.value;
+        const password = logInForm.password.value;
+        loginUser(email, password);
+        logInForm.reset;
+    })
+}
+
+if (logout) logout.addEventListener('click', () => {
+    signOut(auth)
+        .then(() => {
+            console.log('logged out');
+        })
+        .catch(err => console.error(err.message));
+});
 
 // +++++++++++++++++ FUNCTION DEFINITION +++++++++++++++++
 
@@ -40,11 +59,20 @@ function registerUser(name, email, password, regNo) {
         })
         .then(() => {
             console.log('redirecting...');
-            window.location.href = 'localhost:5501';
+            window.location.href = 'https://space-gunner.netlify.app';
         })
         .catch((err) => {
             console.error(err.message);
         });
+    }
+    
+    function loginUser(email, password) {
+        signInWithEmailAndPassword(auth, email, password)
+        .then(cred => {
+            console.log('user loggedin...', cred.user);
+            window.location.href = 'https://space-gunner.netlify.app';
+    })
+    .catch(err => console.error(err.message))
 }
 
 function checkAuth() {
@@ -63,11 +91,3 @@ function checkAuth() {
     });
 }
 
-const logout = document.querySelector('#logout');
-if (logout) logout.addEventListener('click', () => {
-    signOut(auth)
-        .then(() => {
-            console.log('logged out');
-        })
-        .catch(err => console.error(err.message));
-});

@@ -10,6 +10,11 @@
     font-style: normal;
 }
 
+a {
+    text-decoration: none;
+    color: cyan;
+}
+
 /* General reset for body and canvas */
 body {
     margin: 0;
@@ -246,7 +251,30 @@ body {
     justify-content: center;
     align-items: center;
     z-index: 100;
-    gap: 4rem;
+    /* gap: 4rem; */
+}
+
+.lb-sc-lg-rs {
+    width: 100%;
+    height: fit-content;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-evenly;
+}
+.sc-lb {
+    gap: .4rem;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.lg-rs {
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: center;
+    align-items: center;
+    gap: 3rem;
 }
 
 .signup-container {
@@ -285,6 +313,7 @@ body {
 .signup-container p {
     margin-top: 20px;
     color: #00cccc; /* Slightly darker cyan */
+    font-size: .5rem;
 }
 
 .signup-container a {
@@ -294,6 +323,60 @@ body {
 
 .signup-container a:hover {
     text-decoration: underline;
+}
+#sign-up-button {
+    height: 3rem;
+}
+.login-container {
+    background-color: #1a1a1a; /* Dark card background */
+    padding: 30px;
+    border: 2px solid #00ffff; /* Neon cyan border */
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.5); /* Neon glow effect */
+    width: 350px;
+    box-shadow: .5rem .5rem 0 0 cyan;
+    text-align: center;
+}
+
+.login-container h2 {
+    margin-bottom: 25px;
+    color: #00ffff; /* Neon cyan heading */
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.login-container input[type="email"], 
+.login-container input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    margin: 12px 0;
+    background-color: #333; /* Dark input background */
+    border: 2px solid #00ffff; /* Neon border */
+    color: #00ffff; /* Neon input text color */
+    border-radius: 6px;
+    box-shadow: inset 0 0 10px rgba(0, 255, 255, 0.4); /* Inner glow */
+}
+
+
+
+.login-container p {
+    margin-top: 20px;
+    color: #00cccc; /* Slightly darker cyan */
+    font-size: .5rem;
+}
+
+.login-container a {
+    color: #00ffff; /* Neon link */
+    text-decoration: none;
+}
+
+.login-container a:hover {
+    text-decoration: underline;
+}
+.sign-up-button {
+    height: 3rem;
+}
+#log-in-button {
+    height: 3rem;
 }
 /* Leaderboard styling */
 .leaderboard-section {
@@ -305,6 +388,7 @@ body {
     border-radius: 6px;
     color: #00ffff;
     text-align: center;
+    overflow: scroll;
 }
 
 .leaderboard-header {
@@ -352,9 +436,42 @@ body {
     background-color: #333;
 }
 
+#signup-gameover {
+    margin-top: 5rem;
+}
 .signup-gameover a {
     color: white;
     text-decoration: none;
+}
+
+#signup-startup {
+    height: 3rem;
+    width: 6rem;
+    font-size: .5rem;
+    text-align: center;
+    padding-top: 1.2rem;
+}
+#login-startup {
+    height: 3rem;
+    width: 6rem;
+    font-size: .5rem;
+    text-align: center;
+    padding-top: 1.2rem;
+}
+
+
+.auth-container {
+    margin-top: 1rem;
+    padding: 0 1rem;
+    height: 4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    gap: 2rem;
 }
 
 @media screen and (orientation: portrait) {

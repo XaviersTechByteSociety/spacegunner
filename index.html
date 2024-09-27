@@ -18,6 +18,10 @@
     </div>
 
     <div id="startUpScreen" class="press-start-2p-regular">
+        <div class="auth-container z-100">
+            <a id="signup-startup" href="./signup/signup.html" class="z-100">Signup</a>
+            <a id="login-startup" href="./login/login.html" class="z-100">Login</a>
+        </div>
         <div class="card">
             <div class="card-content">SPACE GUNNER</div>
             <div class="card-content card-back"></div>
@@ -29,44 +33,60 @@
     <canvas id="canvas" class="none"></canvas>
 
     <div id="gameOverScreen" class="none">
-        <h1 id="game-over">Game Over</h1>
-        <p style="color: white;" class="z-100">highscore: <span class="z-100" id="highScore"></span></p>
+        <!-- game over -->
+        <div class="go-head">
+            <h1 id="game-over">Game Over</h1>
+        </div>
+        <!-- leader board score and login restart -->
+        <div class="lb-sc-lg-rs">
+            <!-- score and leader board -->
+            <div class="sc-lb">
+                <p style="color: white;" class="z-100">Score: <span class="z-100" id="score"></span></p>
+                <p style="color: white;" class="z-100">High Score: <span class="z-100" id="highScore">To save High score
+                        Please signup</span></p>
 
-        <section id="leaderboard" class="leaderboard-section">
-            <div class="leaderboard-header">
-                <h2>Leaderboard</h2>
-                <p>Top players and their scores.</p>
-            </div>
-        
-            <div class="leaderboard-table-container">
-                <table class="leaderboard-table">
-                    <thead>
-                        <tr>
-                            <th>Player</th>
-                            <th>Score</th>
-                        </tr>
-                    </thead>
-                    <tbody id="leaderboard-table">
-                        <!-- Example row, replace with dynamic data -->
-                        <!-- 
+
+
+
+                <div id="leaderboard" class="leaderboard-section">
+                    <div class="leaderboard-header">
+                        <h2>Leaderboard</h2>
+                        <p>Top players and their scores.</p>
+                    </div>
+
+                    <div class="leaderboard-table-container">
+                        <table class="leaderboard-table">
+                            <thead>
+                                <tr>
+                                    <th>Player</th>
+                                    <th>Score</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leaderboard-table">
+                                <!-- Example row, replace with dynamic data -->
+                                <!-- 
                         <tr>
                             <td>Jane Smith</td>
                             <td>1300</td>
                         </tr> 
                         -->
-                        <!-- More rows go here -->
-                    </tbody>
-                </table>
+                                <!-- More rows go here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div id="signup-gameover" class="z-100">
+                    <a href="./signup/signup.html" class="z-100 button">signup</a>
+                </div>
             </div>
-        </section>
-        
-        <div id="signup-gameover" class="z-100">
-            <a href="./signup/signup.html" class="z-100 button">signup</a>
+            <div class="lg-rs">
+                <a href="" id="logout" class="z-100 button">Logout</a>
+                <div id="restart" class="button">RESTART</div>
+            </div>
         </div>
-        <div id="restart" class="button">RESTART</div>
     </div>
 
-    <div class="gameControls none">
+    <div class="gameControls none z-100">
         <div class="movementControls">
             <button class="up bg-blue press-start-2p-regular">
                 U

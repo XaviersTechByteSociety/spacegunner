@@ -3,10 +3,10 @@ import { db } from "../../firebase/firebase-conf";
 
 const colRef = collection(db, 'users');
 const q = query(colRef, orderBy('highScore', 'desc'));
+
 export const userHighScore = {
     highScore: 0,
 }
-
 
 export async function getLeaderboard() {
     try {
@@ -21,44 +21,65 @@ export async function getLeaderboard() {
         console.error("Error fetching leaderboard:", err.message);
     }
 }
-export function updateDocument(userID, highScore) {
+
+// Update an existing document
+export async function updateDocument(userID, highScore) {
     const docRef = doc(db, 'users', userID);
-    return updateDoc(docRef, {  // Return the promise here
-        highScore: highScore,
-    })
-        .then(() => {
+
+    try {
+        // Check if the document exists before updating
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+            // Document exists, update it
+            await updateDoc(docRef, { 
+                highScore: highScore,
+            });
             console.log('Document updated ...');
-            return getDocument(userID); // Return the promise from getDocument as well
-        })
-        .catch(err => {
-            console.error('Error updating document:', err.message);
-        });
+            return getDocument(userID); // Return the document data after update
+        } else {
+            // Document does not exist, log or handle the situation
+            console.log('No document found to update for user:', userID);
+        }
+    } catch (err) {
+        console.error('Error updating document:', err.message);
+    }
 }
 
-export function getDocument(userId) {
+// Fetch a document by userID
+export async function getDocument(userId) {
     const docRef = doc(db, 'users', userId);
-    return getDoc(docRef)
-        .then((doc) => {
-            if (doc.exists()) {
-                console.log('User doc fetched: ', doc.data());
-                userHighScore.highScore = doc.data().highScore;
-            } else {
-                console.log('No such document!');
-            }
-        })
-        .catch(err => console.log('Error getting document:', err.message));
+
+    try {
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+            console.log('User doc fetched: ', docSnap.data());
+            userHighScore.highScore = docSnap.data().highScore;
+        } else {
+            console.log('No such document!');
+        }
+    } catch (err) {
+        console.error('Error getting document:', err.message);
+    }
 }
 
-export function addDocument(user) {
+// Add a new document to Firestore for a user
+export async function addDocument(user) {
     const docRef = doc(db, 'users', user.uid);
-    setDoc(docRef, {
-        uid: user.uid,
-        email: user.email,
-        displayName: user.displayName || 'NA',
-        regNo: user.regNo,
-        score: 0,
-        highScore: 0,
-        timeStamp: serverTimestamp(),
-    })
-}
 
+    try {
+        // Create a new document
+        await setDoc(docRef, {
+            uid: user.uid,
+            email: user.email,
+            displayName: user.displayName || 'NA',
+            regNo: user.regNo,
+            score: 0,
+            highScore: 0,
+            timeStamp: serverTimestamp(),
+        });
+        console.log('User document created successfully');
+    } catch (err) {
+        console.error('Error adding document:', err.message);
+    }
+}

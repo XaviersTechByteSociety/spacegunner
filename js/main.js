@@ -16,6 +16,7 @@ window.addEventListener('load', () => {
     const gameOverScreen = document.querySelector('#gameOverScreen');
     const restart = document.querySelector('#restart');
     const highScoreSpan = document.querySelector('#highScore');
+    const scoreSpan = document.querySelector('#score');
     const singupGameover = document.querySelector('#signup-gameover');
     const leaderboard = document.querySelector('#leaderboard');
 
@@ -52,7 +53,7 @@ window.addEventListener('load', () => {
             if (leaderboard) leaderboard.classList.add('block');
             if (singupGameover) singupGameover.classList.remove('none', 'block');
             if (singupGameover) singupGameover.classList.add('none');
-    
+
             // Populate leaderboard if necessary
             populateLeaderboard();
         } else {
@@ -71,17 +72,19 @@ window.addEventListener('load', () => {
     // Function to populate the leaderboard
     function populateLeaderboard() {
         const leaderboardTable = document.querySelector('#leaderboard-table');
-        leaderboardTable.innerHTML = ''; // Clear existing rows
+        if (leaderboardTable)  leaderboardTable.innerHTML = ''; // Clear existing rows
 
         // Fetch the leaderboard data
         getLeaderboard().then((users) => {
             users.forEach((user, index) => {
                 const row = document.createElement('tr');
-                row.innerHTML = `
-                <td>${user.displayName || 'Anonymous'}</td>
-                <td>${user.highScore}</td>
-            `;
-                leaderboardTable.appendChild(row);
+                if (row) {
+                    row.innerHTML = `
+                    <td>${user.displayName || 'Anonymous'}</td>
+                    <td>${user.highScore}</td>
+                `;
+                }
+                if (leaderboardTable) leaderboardTable.appendChild(row);
             });
         }).catch(err => {
             console.error("Failed to load leaderboard:", err);
@@ -137,13 +140,14 @@ window.addEventListener('load', () => {
     function endGame() {
         console.log(game.highScore, 'before');
         game.calculateHighScore();
+        scoreSpan.innerText = game.score;
 
-        if (auth.currentUser)  {
+        if (auth.currentUser) {
             updateDocument(userCred.uid, game.highScore).then(() => {
                 // Fetch the high score after updating
                 getDocument(userCred.uid).then(() => {
                     if (gameOverScreen) highScoreSpan.innerText = userHighScore.highScore;
-    
+
                     populateLeaderboard();
                 });
             });
