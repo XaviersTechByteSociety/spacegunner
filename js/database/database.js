@@ -15,7 +15,6 @@ export async function getLeaderboard() {
         snapshot.docs.forEach((doc) => {
             users.push(doc.data());
         });
-        console.log('users', users)
         return users; // Return the fetched users list
     } catch (err) {
         console.error("Error fetching leaderboard:", err.message);
@@ -35,11 +34,10 @@ export async function updateDocument(userID, highScore) {
             await updateDoc(docRef, { 
                 highScore: highScore,
             });
-            console.log('Document updated ...');
             return getDocument(userID); // Return the document data after update
         } else {
             // Document does not exist, log or handle the situation
-            console.log('No document found to update for user:', userID);
+            console.error('No document found to update for user:', userID);
         }
     } catch (err) {
         console.error('Error updating document:', err.message);
@@ -53,10 +51,9 @@ export async function getDocument(userId) {
     try {
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-            console.log('User doc fetched: ', docSnap.data());
             userHighScore.highScore = docSnap.data().highScore;
         } else {
-            console.log('No such document!');
+            console.error('No such document!');
         }
     } catch (err) {
         console.error('Error getting document:', err.message);
@@ -78,7 +75,6 @@ export async function addDocument(user) {
             highScore: 0,
             timeStamp: serverTimestamp(),
         });
-        console.log('User document created successfully');
     } catch (err) {
         console.error('Error adding document:', err.message);
     }

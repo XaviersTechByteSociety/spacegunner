@@ -19,7 +19,6 @@ if (signUpForm) {
         const email = signUpForm.email.value;
         const password = signUpForm.password.value;
         const regNo = signUpForm.regno.value;
-        console.log(email, regNo);
         registerUser(name, email, password, regNo);  // Pass regNo here
         signUpForm.reset();
     })
@@ -40,6 +39,9 @@ if (logout) logout.addEventListener('click', () => {
         .then(() => {
             console.log('logged out');
         })
+        .then(() => {
+            window.location.href = 'https://space-gunner.netlify.app';
+        })
         .catch(err => console.error(err.message));
 });
 
@@ -48,7 +50,6 @@ if (logout) logout.addEventListener('click', () => {
 function registerUser(name, email, password, regNo) {
     createUserWithEmailAndPassword(auth, email, password)
         .then((cred) => {
-            console.log(cred.user);
             // Update the profile with name
             return updateProfile(cred.user, {
                 displayName: name,
@@ -58,7 +59,6 @@ function registerUser(name, email, password, regNo) {
             });
         })
         .then(() => {
-            console.log('redirecting...');
             window.location.href = 'https://space-gunner.netlify.app';
         })
         .catch((err) => {
@@ -69,7 +69,6 @@ function registerUser(name, email, password, regNo) {
     function loginUser(email, password) {
         signInWithEmailAndPassword(auth, email, password)
         .then(cred => {
-            console.log('user loggedin...', cred.user);
             window.location.href = 'https://space-gunner.netlify.app';
     })
     .catch(err => console.error(err.message))
@@ -79,12 +78,10 @@ function checkAuth() {
     onAuthStateChanged(auth, (user) => {
         if (user) {
             // User is logged in
-            console.log('User state changed:', user);
             userCred.uid = user.uid ? user.uid : null;
             userCred.name = user.displayName ? user.displayName : null;
         } else {
             // User is logged out
-            console.log('User is logged out');
             userCred.uid = null
             userCred.name = null; // Reset userCred when logged out
         }

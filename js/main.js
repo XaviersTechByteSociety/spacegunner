@@ -5,6 +5,8 @@ import { getDocument, updateDocument, userHighScore, getLeaderboard } from "./da
 import { auth } from "../firebase/firebase-conf.js";
 
 window.addEventListener('load', () => {
+    const loadingScreen = document.querySelector('#loadingScreen');
+    if(loadingScreen) loadingScreen.classList.remove('none')
     const canvas = document.querySelector('#canvas');
     const startUpCanvas = document.querySelector('#startUpCanvas');
     const ctx = (canvas) ? canvas.getContext('2d') : null;
@@ -28,6 +30,7 @@ window.addEventListener('load', () => {
     let isGameStarted = false;
     let startup = null;
     let game = null;
+
 
     startScreen();
 
@@ -103,6 +106,9 @@ window.addEventListener('load', () => {
         if (startUpScreen) startUpScreen.classList.add('flex');
         if (gameOverScreen) gameOverScreen.classList.add('none');
         startup = new Startup(startUpCanvas, startUpCanvasCtx);
+        if(startup) {
+            if(loadingScreen) loadingScreen.classList.add('none')
+        }
         animateStartup();
     }
 
@@ -138,7 +144,6 @@ window.addEventListener('load', () => {
 
     // End the game.
     function endGame() {
-        console.log(game.highScore, 'before');
         game.calculateHighScore();
         scoreSpan.innerText = game.score;
 
@@ -153,7 +158,6 @@ window.addEventListener('load', () => {
             });
         }
 
-        console.log(game.highScore, 'after');
 
 
         if (game) {
@@ -232,7 +236,6 @@ window.addEventListener('load', () => {
         game = new Game(canvas, ctx);
         if (auth.currentUser) {
             getDocument(userCred.uid).then(() => { // Wait for the document to be fetched
-                console.log('High Score:', userHighScore.highScore); // Log the fetched high score
                 game.highScore = userHighScore.highScore; // Set the game's high score
             });
         }
