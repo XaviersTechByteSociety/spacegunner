@@ -432,14 +432,13 @@ body {
 /* Leaderboard styling */
 .leaderboard-section {
     width: 90%;
-    max-width: 600px;
+    max-width: 50rem;
     margin: 20px auto;
     padding: 15px;
     background-color: #111;
     border-radius: 6px;
     color: #00ffff;
     text-align: center;
-    overflow: scroll;
 }
 
 .leaderboard-header {
@@ -457,10 +456,18 @@ body {
     margin-top: 8px;
 }
 
+/* Container for the table with a set height for scrolling */
+.leaderboard-table-container {
+    max-height: 8rem; /* Adjust this value as needed */
+    overflow-y: auto; /* Enable vertical scrolling */
+    margin-top: 10px;
+    background-color: #111;
+    border-radius: 6px;
+}
+
 .leaderboard-table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 10px;
 }
 
 .leaderboard-table th, .leaderboard-table td {
@@ -486,6 +493,7 @@ body {
 .leaderboard-table tr:hover {
     background-color: #333;
 }
+
 
 #signup-gameover {
     margin-top: 5rem;

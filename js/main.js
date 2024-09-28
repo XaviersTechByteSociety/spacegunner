@@ -53,7 +53,7 @@ window.addEventListener('load', () => {
     auth.onAuthStateChanged(user => {
         if (user) {
             // User is signed in.
-            userName.textContent = (userCred.name) ? userCred.name : 'N/A'; 
+            if (userName) userName.textContent = (userCred.name) ? userCred.name : 'N/A'; 
             if (leaderboard) leaderboard.classList.remove('none', 'block');
             if (leaderboard) leaderboard.classList.add('block');
             if (singupGameover) singupGameover.classList.remove('none', 'block');
@@ -63,7 +63,7 @@ window.addEventListener('load', () => {
             populateLeaderboard();
         } else {
             // User is not signed in.
-            userName.textContent = 'Guest';
+            if (userName) userName.textContent = 'Guest';
             if (leaderboard) leaderboard.classList.remove('none', 'block');
             if (leaderboard) leaderboard.classList.add('none');
             if (singupGameover) singupGameover.classList.remove('none', 'block');
