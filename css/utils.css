@@ -28,6 +28,9 @@
 .z-100 {
     z-index: 100;
 }
+.z-300 {
+    z-index: 300;
+}
 .button {
     background: transparent;
     outline: transparent;

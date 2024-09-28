@@ -224,6 +224,42 @@ body {
     width: 100%;
     gap: 5rem;
 }
+.svg-angle-down {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.howtoplay {
+    color: cyan;
+    position: fixed;
+    bottom: 2rem;
+    right: 4rem;
+    border: 2px solid cyan;
+    padding: .5rem;
+}
+.howtoplayinfo{
+    color: white;
+    border: 2px solid cyan;
+    padding: .5rem;
+    background: transparent;
+    backdrop-filter: blur(10px);
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+    max-height: 18rem;
+}
+.computer {
+    gap: 5rem;
+}
+.phone {
+    margin-top: 1rem;
+}
+
+.howtoplayinfo h4 {
+    color: cyan;
+}
 
 #start {
     z-index: 100;

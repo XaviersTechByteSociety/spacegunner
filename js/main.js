@@ -6,7 +6,7 @@ import { auth } from "../firebase/firebase-conf.js";
 
 window.addEventListener('load', () => {
     const loadingScreen = document.querySelector('#loadingScreen');
-    if(loadingScreen) loadingScreen.classList.remove('none')
+    if (loadingScreen) loadingScreen.classList.remove('none')
     const canvas = document.querySelector('#canvas');
     const startUpCanvas = document.querySelector('#startUpCanvas');
     const ctx = (canvas) ? canvas.getContext('2d') : null;
@@ -22,6 +22,9 @@ window.addEventListener('load', () => {
     const singupGameover = document.querySelector('#signup-gameover');
     const leaderboard = document.querySelector('#leaderboard');
     const userName = document.querySelector('#userName');
+    const angleDown = document.querySelector('.svg-angle-down');
+    const howToPlay = document.querySelector('.howtoplay')
+    const howToPlayInfo = document.querySelector('.howtoplayinfo')
 
     if (canvas) canvas.width = window.innerWidth;
     if (canvas) canvas.height = window.innerHeight;
@@ -38,38 +41,56 @@ window.addEventListener('load', () => {
     // Handle start and restart
     if (start) start.addEventListener('click', startGame)
     if (restart) restart.addEventListener('click', restartGame)
-
-    // if (auth.currentUser) {
-    //     if(leaderboard) leaderboard.classList.remove('none', 'block');
-    //     if(leaderboard) leaderboard.classList.add('block');
-    //     if (singupGameover) singupGameover.classList.remove('none', 'block');
-    //     if (singupGameover) singupGameover.classList.add('none');
-    // } else {
-    //     if(leaderboard) leaderboard.classList.remove('none', 'block');
-    //     if(leaderboard) leaderboard.classList.add('none');
-    //     if (singupGameover) singupGameover.classList.remove('none', 'block');
-    //     if (singupGameover) singupGameover.classList.add('block')
-    // }
-    auth.onAuthStateChanged(user => {
-        if (user) {
-            // User is signed in.
-            if (userName) userName.textContent = (userCred.name) ? userCred.name : 'N/A'; 
-            if (leaderboard) leaderboard.classList.remove('none', 'block');
-            if (leaderboard) leaderboard.classList.add('block');
-            if (singupGameover) singupGameover.classList.remove('none', 'block');
-            if (singupGameover) singupGameover.classList.add('none');
-
-            // Populate leaderboard if necessary
-            populateLeaderboard();
-        } else {
-            // User is not signed in.
-            if (userName) userName.textContent = 'Guest';
-            if (leaderboard) leaderboard.classList.remove('none', 'block');
-            if (leaderboard) leaderboard.classList.add('none');
-            if (singupGameover) singupGameover.classList.remove('none', 'block');
-            if (singupGameover) singupGameover.classList.add('block');
+    if (howToPlay) howToPlay.addEventListener('click', () => {
+        if (howToPlayInfo) {
+            if (howToPlayInfo.classList.contains('none')) {
+                howToPlayInfo.classList.remove('none');
+                howToPlayInfo.classList.add('block')
+            }
         }
-    });
+    })
+    if (angleDown) angleDown.addEventListener('click', () => {
+        console.log('click angle')
+        if (howToPlay) {
+            if (howToPlayInfo.classList.contains('block')) {
+                howToPlayInfo.classList.remove('block');
+                howToPlayInfo.classList.add('none')
+            }
+        }
+    })
+
+        // if (auth.currentUser) {
+        //     if(leaderboard) leaderboard.classList.remove('none', 'block');
+        //     if(leaderboard) leaderboard.classList.add('block');
+        //     if (singupGameover) singupGameover.classList.remove('none', 'block');
+        //     if (singupGameover) singupGameover.classList.add('none');
+        // } else {
+        //     if(leaderboard) leaderboard.classList.remove('none', 'block');
+        //     if(leaderboard) leaderboard.classList.add('none');
+        //     if (singupGameover) singupGameover.classList.remove('none', 'block');
+        //     if (singupGameover) singupGameover.classList.add('block')
+        // }
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                // User is signed in.
+                if (userName) userName.textContent = (userCred.name) ? userCred.name : 'N/A';
+                if (leaderboard) leaderboard.classList.remove('none', 'block');
+                if (leaderboard) leaderboard.classList.add('block');
+                if (singupGameover) singupGameover.classList.remove('none', 'block');
+                if (singupGameover) singupGameover.classList.add('none');
+
+                // Populate leaderboard if necessary
+                populateLeaderboard();
+            } else {
+                // User is not signed in.
+                if (userName) userName.textContent = 'Guest';
+                if (leaderboard) leaderboard.classList.remove('none', 'block');
+                if (leaderboard) leaderboard.classList.add('none');
+                if (singupGameover) singupGameover.classList.remove('none', 'block');
+                if (singupGameover) singupGameover.classList.add('block');
+            }
+        });
+
 
 
     // // ------------ FUNCTION DEFINITIONS ---------------
@@ -78,7 +99,7 @@ window.addEventListener('load', () => {
     // Function to populate the leaderboard
     function populateLeaderboard() {
         const leaderboardTable = document.querySelector('#leaderboard-table');
-        if (leaderboardTable)  leaderboardTable.innerHTML = ''; // Clear existing rows
+        if (leaderboardTable) leaderboardTable.innerHTML = ''; // Clear existing rows
 
         // Fetch the leaderboard data
         getLeaderboard().then((users) => {
@@ -109,8 +130,8 @@ window.addEventListener('load', () => {
         if (startUpScreen) startUpScreen.classList.add('flex');
         if (gameOverScreen) gameOverScreen.classList.add('none');
         startup = new Startup(startUpCanvas, startUpCanvasCtx);
-        if(startup) {
-            if(loadingScreen) loadingScreen.classList.add('none')
+        if (startup) {
+            if (loadingScreen) loadingScreen.classList.add('none')
         }
         animateStartup();
     }
