@@ -29,7 +29,7 @@ window.addEventListener('load', () => {
     const howToPlayInfo = document.querySelector('.howtoplayinfo')
     const devNote = document.querySelector('.dev-note')
     const hamburger = document.querySelector('#hamburger');
-    const signupStartup = document.querySelector('.signup-startup');
+    const signupStartup = document.querySelector('#signup-startup');
     const authOptions = document.querySelector('.auth-options');
     const authClose = document.querySelector('#auth-close');
 
@@ -107,7 +107,6 @@ window.addEventListener('load', () => {
             if (singupGameover) singupGameover.classList.add('none');
             if (signupStartup) signupStartup.classList.remove('none', 'block');
             if (signupStartup) signupStartup.classList.add('none');
-            console.log('hidden')
             // Populate leaderboard if necessary
             // populateLeaderboard();
         } else {
@@ -119,7 +118,6 @@ window.addEventListener('load', () => {
             if (singupGameover) singupGameover.classList.add('block');
             if (signupStartup) signupStartup.classList.remove('none', 'block');
             if (signupStartup) signupStartup.classList.add('block');
-            console.log('visible')
         }
     });
 

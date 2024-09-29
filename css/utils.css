@@ -1,13 +1,13 @@
 .none {
-    display: none;
+    display: none !important;
 }
 
 .flex {
-    display: flex;
+    display: flex !important;
 }
 
 .block {
-    display: block;
+    display: block !important;
 }
 
 .bg-red {
