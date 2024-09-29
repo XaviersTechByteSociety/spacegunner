@@ -1,8 +1,8 @@
-import { collection, setDoc, serverTimestamp, doc, getDoc, updateDoc, query, orderBy, getDocs } from "@firebase/firestore";
+import { collection, setDoc, serverTimestamp, doc, getDoc, updateDoc, query, orderBy, getDocs, limit } from "@firebase/firestore";
 import { db } from "../../firebase/firebase-conf";
 
 const colRef = collection(db, 'users');
-const q = query(colRef, orderBy('highScore', 'desc'));
+const q = query(colRef, orderBy('highScore', 'desc'), limit(10));
 
 export const userHighScore = {
     highScore: 0,
