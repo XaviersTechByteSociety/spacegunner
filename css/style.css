@@ -233,7 +233,7 @@ body {
     align-items: center;
 }
 
-.note-how {
+/* .note-how {
     height: 4rem;
     position: fixed;
     bottom: 2rem;
@@ -241,9 +241,12 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-}
+} */
 
 .note {
+    position: fixed;
+    bottom: 3rem;
+    left: 3rem;
     color: cyan;
     border: 2px solid cyan;
     padding: .5rem;
@@ -252,6 +255,9 @@ body {
 }
 
 .howtoplay {
+    position: fixed;
+    bottom: 3rem;
+    right: 3rem;
     color: cyan;
     border: 2px solid cyan;
     padding: .5rem;
