@@ -290,7 +290,6 @@ window.addEventListener('load', () => {
         game = new Game(canvas, ctx);
         if (auth.currentUser) {
             getDocument(userCred.uid).then(() => { // Wait for the document to be fetched
-                console.log(game.highScore);
                 game.highScore = userHighScore.highScore; // Set the game's high score
             });
         }
