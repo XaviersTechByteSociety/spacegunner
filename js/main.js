@@ -108,7 +108,7 @@ window.addEventListener('load', () => {
             if (signupStartup) signupStartup.classList.remove('none', 'block');
             if (signupStartup) signupStartup.classList.add('none');
             // Populate leaderboard if necessary
-            populateLeaderboard();
+            // populateLeaderboard();
         } else {
             // User is not signed in.
             if (userName) userName.textContent = 'Guest';
