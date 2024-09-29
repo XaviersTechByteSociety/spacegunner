@@ -8,9 +8,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-    <title>Signup Form</title>
+    <title>Delete Account</title>
     <style>
-        body {
+          body {
             background-color: black;
             display: flex;
             justify-content: center;
@@ -21,22 +21,17 @@
     </style>
 </head>
 <body>
-
-
-    <div class="signup-container z-100 press-start-2p-regular">
-        <h2 class="">Sign Up</h2>
-        <form id="sign-up">
-            <input id="name" type="text" name="name" placeholder="Full Name" required>
+    <div class="delete-container z-100 press-start-2p-regular">
+        <h2>Delete Account</h2>
+        <form id="delete-account-form">
             <input id="email" type="email" name="email" placeholder="Email" required>
-            <input id="regno" type="text" name="regno" placeholder="College Reg no.">
             <input id="password" type="password" name="password" placeholder="Password" required>
-            <button id="sign-up-button" type="submit" class="button press-start-2p-regular">Sign Up</button>
+            <button id="delete-account-button" type="submit" class="button press-start-2p-regular">Delete Account</button>
         </form>
-        <p>Already have an account? <a href="../login/login.html">Login here</a></p>
+        <p>Changed your mind? <a href="../login/login.html">Login here</a></p>
+        <p class="message" id="message"></p>
     </div>
 
-
     <script src="../dist/bundle.js"></script>
-
 </body>
 </html>

@@ -1,10 +1,11 @@
-import { createUserWithEmailAndPassword, onAuthStateChanged, updateProfile, signOut, signInWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, onAuthStateChanged, updateProfile, signOut, signInWithEmailAndPassword, reauthenticateWithCredential, EmailAuthProvider, deleteUser as firebaseDeleteUser  } from "firebase/auth";
 import { auth } from '../../firebase/firebase-conf';
 import { addDocument } from "../database/database";
 
 const signUpForm = document.querySelector('#sign-up');
 const logInForm = document.querySelector('#log-in');
 const logout = document.querySelector('#logout');
+const deleteForm = document.querySelector('#delete-account-form');
 export const userCred = {
     uid: null,
     name: null,
@@ -45,6 +46,13 @@ if (logout) logout.addEventListener('click', () => {
         .catch(err => console.error(err.message));
 });
 
+if (deleteForm) deleteForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const email = deleteForm.email.value;
+    const password = deleteForm.password.value;
+    deleteUser(email, password);
+})
+
 // +++++++++++++++++ FUNCTION DEFINITION +++++++++++++++++
 
 async function registerUser(name, email, password, regNo) {
@@ -75,6 +83,46 @@ function loginUser(email, password) {
         })
         .catch(err => console.error(err.message))
 }
+
+function deleteUser(email, password) {
+    const user = auth.currentUser;
+
+    if (!user) {
+        // If no user is signed in, sign in the user with email and password first
+        signInWithEmailAndPassword(auth, email, password)
+            .then(cred => {
+                // Once signed in, proceed to delete the account
+                return deleteAfterAuth(cred.user, email, password);
+            })
+            .catch((error) => {
+                console.error('Error signing in user: ', error.message);
+            });
+    } else {
+        // If user is already signed in, proceed with deletion
+        deleteAfterAuth(user, email, password);
+    }
+}
+
+function deleteAfterAuth(user, email, password) {
+    const credential = EmailAuthProvider.credential(email, password);
+
+    // Reauthenticate the user before deletion
+    reauthenticateWithCredential(user, credential)
+        .then(() => {
+            // After reauthenticating, delete the user
+            return firebaseDeleteUser(user);
+        })
+        .then(() => {
+            console.log('User account deleted successfully.');
+            deleteForm.reset();
+            window.location.href = 'https://space-gunner.netlify.app'; // Redirect after deletion
+        })
+        .catch((error) => {
+            console.error('Error deleting user: ', error.message);
+        });
+}
+
+
 
 function checkAuth() {
     onAuthStateChanged(auth, (user) => {

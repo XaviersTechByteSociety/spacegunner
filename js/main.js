@@ -22,9 +22,16 @@ window.addEventListener('load', () => {
     const singupGameover = document.querySelector('#signup-gameover');
     const leaderboard = document.querySelector('#leaderboard');
     const userName = document.querySelector('#userName');
-    const angleDown = document.querySelector('.svg-angle-down');
+    const htpClose = document.querySelector('#htp-close');
+    const dnClose = document.querySelector('#dn-close');
     const howToPlay = document.querySelector('.howtoplay')
+    const note = document.querySelector('.note')
     const howToPlayInfo = document.querySelector('.howtoplayinfo')
+    const devNote = document.querySelector('.dev-note')
+    const hamburger = document.querySelector('#hamburger');
+    const signupStartup = document.querySelector('.signup-startup');
+    const authOptions = document.querySelector('.auth-options');
+    const authClose = document.querySelector('#auth-close');
 
     if (canvas) canvas.width = window.innerWidth;
     if (canvas) canvas.height = window.innerHeight;
@@ -38,58 +45,81 @@ window.addEventListener('load', () => {
 
     startScreen();
 
-    // Handle start and restart
+    // Handle event listners
     if (start) start.addEventListener('click', startGame)
     if (restart) restart.addEventListener('click', restartGame)
     if (howToPlay) howToPlay.addEventListener('click', () => {
         if (howToPlayInfo) {
             if (howToPlayInfo.classList.contains('none')) {
                 howToPlayInfo.classList.remove('none');
-                howToPlayInfo.classList.add('block')
+                howToPlayInfo.classList.add('flex')
             }
         }
     })
-    if (angleDown) angleDown.addEventListener('click', () => {
-        console.log('click angle')
-        if (howToPlay) {
-            if (howToPlayInfo.classList.contains('block')) {
-                howToPlayInfo.classList.remove('block');
+    if (htpClose) htpClose.addEventListener('click', () => {
+        if (howToPlayInfo) {
+            if (howToPlayInfo.classList.contains('flex')) {
+                howToPlayInfo.classList.remove('flex');
                 howToPlayInfo.classList.add('none')
             }
         }
     })
-
-        // if (auth.currentUser) {
-        //     if(leaderboard) leaderboard.classList.remove('none', 'block');
-        //     if(leaderboard) leaderboard.classList.add('block');
-        //     if (singupGameover) singupGameover.classList.remove('none', 'block');
-        //     if (singupGameover) singupGameover.classList.add('none');
-        // } else {
-        //     if(leaderboard) leaderboard.classList.remove('none', 'block');
-        //     if(leaderboard) leaderboard.classList.add('none');
-        //     if (singupGameover) singupGameover.classList.remove('none', 'block');
-        //     if (singupGameover) singupGameover.classList.add('block')
-        // }
-        auth.onAuthStateChanged(user => {
-            if (user) {
-                // User is signed in.
-                if (userName) userName.textContent = (userCred.name) ? userCred.name : 'N/A';
-                if (leaderboard) leaderboard.classList.remove('none', 'block');
-                if (leaderboard) leaderboard.classList.add('block');
-                if (singupGameover) singupGameover.classList.remove('none', 'block');
-                if (singupGameover) singupGameover.classList.add('none');
-
-                // Populate leaderboard if necessary
-                populateLeaderboard();
-            } else {
-                // User is not signed in.
-                if (userName) userName.textContent = 'Guest';
-                if (leaderboard) leaderboard.classList.remove('none', 'block');
-                if (leaderboard) leaderboard.classList.add('none');
-                if (singupGameover) singupGameover.classList.remove('none', 'block');
-                if (singupGameover) singupGameover.classList.add('block');
+    if (note) note.addEventListener('click', () => {
+        if (devNote) {
+            if (devNote.classList.contains('none')) {
+                devNote.classList.remove('none');
+                devNote.classList.add('flex');
             }
-        });
+        }
+    })
+    if (dnClose) dnClose.addEventListener('click', () => {
+        if (devNote) {
+            if (devNote.classList.contains('flex')) {
+                devNote.classList.remove('flex');
+                devNote.classList.add('none')
+            }
+        }
+    })
+    if (hamburger) hamburger.addEventListener('click', () => {
+        if (authOptions) {
+            if (authOptions.classList.contains('none')) {
+                authOptions.classList.remove('none');
+                authOptions.classList.add('flex');
+            }
+        }
+    })
+    if (authClose) authClose.addEventListener('click', () => {
+        if (authOptions) {
+            if (authOptions.classList.contains('flex')) {
+                authOptions.classList.remove('flex');
+                authOptions.classList.add('none');
+            }
+        }
+    })
+
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            // User is signed in.
+            if (userName) userName.textContent = (userCred.name) ? userCred.name : 'N/A';
+            if (leaderboard) leaderboard.classList.remove('none', 'block');
+            if (leaderboard) leaderboard.classList.add('block');
+            if (singupGameover) singupGameover.classList.remove('none', 'block');
+            if (singupGameover) singupGameover.classList.add('none');
+            if (signupStartup) signupStartup.classList.remove('none', 'block');
+            if (signupStartup) signupStartup.classList.add('none');
+            // Populate leaderboard if necessary
+            populateLeaderboard();
+        } else {
+            // User is not signed in.
+            if (userName) userName.textContent = 'Guest';
+            if (leaderboard) leaderboard.classList.remove('none', 'block');
+            if (leaderboard) leaderboard.classList.add('none');
+            if (singupGameover) singupGameover.classList.remove('none', 'block');
+            if (singupGameover) singupGameover.classList.add('block');
+            if (signupStartup) signupStartup.classList.remove('none', 'block');
+            if (signupStartup) signupStartup.classList.add('block');
+        }
+    });
 
 
 
@@ -260,6 +290,7 @@ window.addEventListener('load', () => {
         game = new Game(canvas, ctx);
         if (auth.currentUser) {
             getDocument(userCred.uid).then(() => { // Wait for the document to be fetched
+                console.log(game.highScore);
                 game.highScore = userHighScore.highScore; // Set the game's high score
             });
         }

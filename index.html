@@ -29,25 +29,74 @@
 
     <div id="startUpScreen" class="press-start-2p-regular">
         <div class="auth-container z-100">
-            <a id="signup-startup" href="./signup/signup.html" class="z-100">Signup</a>
-            <p id="userName" class="z-100"></p>
-            <a id="login-startup" href="./login/login.html" class="z-100">Login</a>
+            <div class="auth-menu">
+                <svg id="hamburger" class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="cyan" stroke-linecap="round" stroke-width="2" d="M5 7h14M5 12h14M5 17h14" />
+                </svg>
+                <a class="signup-startup" href="./signup/signup.html" class="z-100">Signup</a>
+            </div>
+            <div class="">
+                <p id="userName" class="z-100"></p>
+            </div>
+        </div>
+        <div class="auth-options z-100 none">
+            <div id="auth-close" class="svg-close">
+                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                    width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M6 18 17.94 6M18 18 6.06 6" />
+                </svg>
+            </div>
+            <a href="./signup/signup.html" class="z-100">Signup</a>
+            <a href="./login/login.html" class="z-100">Login</a>
+            <a href="" id="logout">Logout</a>
+            <a href="./delete/delete.html" class="z-100">Delete</a>
         </div>
         <div class="card">
             <div class="card-content">SPACE GUNNER</div>
             <div class="card-content card-back"></div>
         </div>
         <button id="start" class="button press-start-2p-regular">PUSH START</button>
-        <div class="howtoplay z-100">How to play</div>
-        <div class="howtoplayinfo z-100 none">
+        <div class="note-how z-100">
+            <div class="note z-100">Note</div>
+            <div class="howtoplay z-100">How to play</div>
+        </div>
+        <div class="dev-note z-100 message-box none">
+            <div id="dn-close" class="svg-close z-300">
+                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                    width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M6 18 17.94 6M18 18 6.06 6" />
+                </svg>
+            </div>
+            <h4 class="nfd-h">Note from developer</h4>
+            <div class="">
+                <h3>We have exceeded the write limit. It will reset at 12:30pm 29th september.</h3>
+            </div>
+            <div class="">
+                <p class="nfd-p">Some users may have experienced their high score staying at 0, but the issue has now
+                    been fixed.</p>
+                <p class="nfd-p">Those users are requested to <a href="./delete/delete.html">delete</a> their accound
+                    and create a new one.</p>
+                <p class="nfd-p">Sorry For the inconvenience.</p>
+            </div>
+            <div class="">
+                <p class="nfd-p">Currently the game is not supported on IOS devices.</p>
+                <p class="nfd-p">This game is tested on these browsers: Chorme, Firefox and brave.</p>
+                <p class="nfd-p">If you encounter any issues, please report them at <a
+                        href="mailto:xts@sxcran.org">xts@sxcran.org</a></p>
+            </div>
+        </div>
+        <div class="howtoplayinfo message-box z-100 none">
+            <div id="htp-close" class="svg-close z-300">
+                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                    width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M6 18 17.94 6M18 18 6.06 6" />
+                </svg>
+            </div>
             <div class="computer z-100">
-                <div class="svg-angle-down z-300">
-                    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="m19 9-7 7-7-7" />
-                    </svg>
-                </div>
                 <h4 class="z-100">On computer</h4>
                 <p class="z-100">Press arrow keys to move the aim.</p>
                 <p class="z-100">Hit space to shoot the blocks</p>
