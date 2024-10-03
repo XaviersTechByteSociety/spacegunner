@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,9 +9,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <title>Delete Account</title>
     <style>
-          body {
+        body {
             background-color: black;
             display: flex;
             justify-content: center;
@@ -20,13 +23,15 @@
         }
     </style>
 </head>
+
 <body>
     <div class="delete-container z-100 press-start-2p-regular">
         <h2>Delete Account</h2>
         <form id="delete-account-form">
             <input id="email" type="email" name="email" placeholder="Email" required>
             <input id="password" type="password" name="password" placeholder="Password" required>
-            <button id="delete-account-button" type="submit" class="button press-start-2p-regular">Delete Account</button>
+            <button id="delete-account-button" type="submit" class="button press-start-2p-regular">Delete
+                Account</button>
         </form>
         <p>Changed your mind? <a href="../login/login.html">Login here</a></p>
         <p class="message" id="message"></p>
@@ -34,4 +39,5 @@
 
     <script src="../dist/bundle.js"></script>
 </body>
+
 </html>
