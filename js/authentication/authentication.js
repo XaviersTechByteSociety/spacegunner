@@ -1,4 +1,4 @@
-import { createUserWithEmailAndPassword, onAuthStateChanged, updateProfile, signOut, signInWithEmailAndPassword, reauthenticateWithCredential, EmailAuthProvider, deleteUser as firebaseDeleteUser } from "firebase/auth";
+import { createUserWithEmailAndPassword, onAuthStateChanged, updateProfile, signOut, signInWithEmailAndPassword, reauthenticateWithCredential, EmailAuthProvider, deleteUser as firebaseDeleteUser, sendPasswordResetEmail } from "firebase/auth";
 import { auth } from '../../firebase/firebase-conf';
 import { addDocument } from "../database/database";
 
@@ -10,10 +10,6 @@ export const userCred = {
     uid: null,
     name: null,
 };
-function notification() {
-    //TODO
-    console.log('notification');
-}
 
 checkAuth();
 
@@ -39,29 +35,9 @@ if (logInForm) {
     })
 }
 
-if (logout) logout.addEventListener('click', () => {
-    signOut(auth)
-        .then(() => {
-            Toastify({
-                text: "Logged out successful!", // Text to display in the toast
-                duration: 3000,            // Duration in milliseconds (3 seconds in this case)
-                close: true,               // Show a close button
-                gravity: "top",            // Position the toast at the top
-                position: "right",         // Display toast on the right side
-                style: {
-                    background: "rgba(0, 0, 0, 0.5)",
-                    border: "2px solid cyan",
-                    padding: ".5rem",
-                    zIndex: '400',
-                    backdropFilter: 'blur(10px)',
-                }
-            }).showToast();
-        })
-        .then(() => {
-            window.location.href = 'https://space-gunner.netlify.app';
-        })
-        .catch(err => console.error(err.message));
-});
+
+
+if (logout) logout.addEventListener('click', logoutUser);
 
 if (deleteForm) deleteForm.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -86,177 +62,343 @@ async function registerUser(name, email, password, regNo) {
         }
 
         await Toastify({
-            text: "Sign up successful!", // Text to display in the toast
-            duration: 3000,            // Duration in milliseconds (3 seconds in this case)
-            close: true,               // Show a close button
-            gravity: "top",            // Position the toast at the top
-            position: "right",         // Display toast on the right side
+            text: "Sign up successful!\nRedirecting ...",
+            duration: 2000,
+            close: true,
+            gravity: "top",
+            position: "right",
             style: {
+                fontSize: "14px",
+                maxWidth: "fit-content",
                 background: "rgba(0, 0, 0, 0.5)",
                 border: "2px solid cyan",
                 padding: ".5rem",
+                color: "#ffffff",
+                wordWrap: "break-word",
+                textAlign: "center",
                 zIndex: '400',
                 backdropFilter: 'blur(10px)',
             }
         }).showToast();
 
         // Redirect only after everything completes
-        window.location.href = 'https://space-gunner.netlify.app';
+        setTimeout(() => {
+            window.location.href = 'https://space-gunner.netlify.app';
+        }, 2000);
     } catch (err) {
         console.error(err.message);
     }
 }
 
-
-function loginUser(email, password) {
-    signInWithEmailAndPassword(auth, email, password)
-        .then(() => {
+async function loginUser(email, password) {
+    try {
+        const cred = await signInWithEmailAndPassword(auth, email, password)
+        if (cred.user) {
             Toastify({
-                text: "Login successful!", // Text to display in the toast
-                duration: 3000,            // Duration in milliseconds (3 seconds in this case)
-                close: true,               // Show a close button
-                gravity: "top",            // Position the toast at the top
-                position: "right",         // Display toast on the right side
+                text: "Login successful!\nRedirecting ...",
+                duration: 2000,
+                close: true,
+                gravity: "top",
+                position: "right",
                 style: {
+                    fontSize: "14px",
+                    maxWidth: "fit-content",
                     background: "rgba(0, 0, 0, 0.5)",
                     border: "2px solid cyan",
                     padding: ".5rem",
+                    color: "#ffffff",
+                    wordWrap: "break-word",
+                    textAlign: "center",
                     zIndex: '400',
                     backdropFilter: 'blur(10px)',
                 }
             }).showToast();
-        })
-        .then(cred => {
+        }
+
+        setTimeout(() => {
             window.location.href = 'https://space-gunner.netlify.app';
-        })
-        .catch(err => {
-            if (err.code === 'auth/invalid-credential') {
-                Toastify({
-                    text: "Check you Email and password and try again.", // Text to display in the toast
-                    duration: 3000,            // Duration in milliseconds (3 seconds in this case)
-                    close: true,               // Show a close button
-                    gravity: "top",            // Position the toast at the top
-                    position: "right",         // Display toast on the right side
-                    style: {
-                        fontSize: '.8rem',
-                        background: "rgba(0, 0, 0, 0.5)",
-                        border: "2px solid red",
-                        padding: ".5rem",
-                        zIndex: '400',
-                        backdropFilter: 'blur(10px)',
-                    }
-                }).showToast();
-            }
-            else if (err.code === 'auth/too-many-requests') {
-                Toastify({
-                    text: "Too many login attempts try again later.", // Text to display in the toast
-                    duration: 3000,            // Duration in milliseconds (3 seconds in this case)
-                    close: true,               // Show a close button
-                    gravity: "top",            // Position the toast at the top
-                    position: "right",         // Display toast on the right side
-                    style: {
-                        fontSize: '.8rem',
-                        background: "rgba(0, 0, 0, 0.5)",
-                        border: "2px solid red",
-                        padding: ".5rem",
-                        zIndex: '400',
-                        backdropFilter: 'blur(10px)',
-                    }
-                }).showToast();
-            }
-            else {
-                console.error(err.message);
-            }
-        })
-}
+        }, 2000);
 
-function deleteUser(email, password) {
-    const user = auth.currentUser;
-
-    if (!user) {
-        // If no user is signed in, sign in the user with email and password first
-        signInWithEmailAndPassword(auth, email, password)
-            .then(cred => {
-                // Once signed in, proceed to delete the account
-                return deleteAfterAuth(cred.user, email, password);
-            })
-            .catch((error) => {
-                if (err.code === 'auth/invalid-credential') {
-                    Toastify({
-                        text: "Check you Email and password and try again.", // Text to display in the toast
-                        duration: 3000,            // Duration in milliseconds (3 seconds in this case)
-                        close: true,               // Show a close button
-                        gravity: "top",            // Position the toast at the top
-                        position: "right",         // Display toast on the right side
-                        style: {
-                            fontSize: '.8rem',
-                            background: "rgba(0, 0, 0, 0.5)",
-                            border: "2px solid red",
-                            padding: ".5rem",
-                            zIndex: '400',
-                            backdropFilter: 'blur(10px)',
-                        }
-                    }).showToast();
+    } catch (err) {
+        if (err.code === 'auth/invalid-credential') {
+            Toastify({
+                text: "Check you Email and password and try again.",
+                duration: 2000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                style: {
+                    fontSize: "14px",
+                    maxWidth: "fit-content",
+                    background: "rgba(0, 0, 0, 0.5)",
+                    border: "2px solid red",
+                    padding: ".5rem",
+                    color: "#ffffff",
+                    wordWrap: "break-word",
+                    textAlign: "center",
+                    zIndex: '400',
+                    backdropFilter: 'blur(10px)',
                 }
-                else if (err.code === 'auth/too-many-requests') {
-                    Toastify({
-                        text: "Too many login attempts try again later.", // Text to display in the toast
-                        duration: 3000,            // Duration in milliseconds (3 seconds in this case)
-                        close: true,               // Show a close button
-                        gravity: "top",            // Position the toast at the top
-                        position: "right",         // Display toast on the right side
-                        style: {
-                            fontSize: '.8rem',
-                            background: "rgba(0, 0, 0, 0.5)",
-                            border: "2px solid red",
-                            padding: ".5rem",
-                            zIndex: '400',
-                            backdropFilter: 'blur(10px)',
-                        }
-                    }).showToast();
+            }).showToast();
+        }
+        else if (err.code === 'auth/too-many-requests') {
+            Toastify({
+                text: "Too many login attempts try again later.",
+                duration: 2000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                style: {
+                    fontSize: "14px",
+                    maxWidth: "fit-content",
+                    background: "rgba(0, 0, 0, 0.5)",
+                    border: "2px solid red",
+                    padding: ".5rem",
+                    color: "#ffffff",
+                    wordWrap: "break-word",
+                    textAlign: "center",
+                    zIndex: '400',
+                    backdropFilter: 'blur(10px)',
                 }
-                else {
-                    console.error('Error signing in user: ', error.message);
+            }).showToast();
+        }
+        else if (err.code === 'auth/invalid-credential') {
+            Toastify({
+                text: "Check you Email and password and try again.",
+                duration: 2000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                style: {
+                    fontSize: "14px",
+                    maxWidth: "fit-content",
+                    background: "rgba(0, 0, 0, 0.5)",
+                    border: "2px solid red",
+                    padding: ".5rem",
+                    color: "#ffffff",
+                    wordWrap: "break-word",
+                    textAlign: "center",
+                    zIndex: '400',
+                    backdropFilter: 'blur(10px)',
                 }
-            });
-    } else {
-        // If user is already signed in, proceed with deletion
-        deleteAfterAuth(user, email, password);
+            }).showToast();
+        }
+        else if (err.code === 'auth/too-many-requests') {
+            Toastify({
+                text: "Too many login attempts try again later.",
+                duration: 2000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                style: {
+                    fontSize: "14px",
+                    maxWidth: "fit-content",
+                    background: "rgba(0, 0, 0, 0.5)",
+                    border: "2px solid red",
+                    padding: ".5rem",
+                    color: "#ffffff",
+                    wordWrap: "break-word",
+                    textAlign: "center",
+                    zIndex: '400',
+                    backdropFilter: 'blur(10px)',
+                }
+            }).showToast();
+        }
+        else {
+            console.error(err.message);
+            Toastify({
+                text: `${err.code}`,
+                duration: 2000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                style: {
+                    fontSize: "14px",
+                    maxWidth: "fit-content",
+                    background: "rgba(0, 0, 0, 0.5)",
+                    border: "2px solid red",
+                    padding: ".5rem",
+                    color: "#ffffff",
+                    wordWrap: "break-word",
+                    textAlign: "center",
+                    zIndex: '400',
+                    backdropFilter: 'blur(10px)',
+                }
+            }).showToast();
+        }
     }
 }
 
-function deleteAfterAuth(user, email, password) {
-    const credential = EmailAuthProvider.credential(email, password);
 
-    // Reauthenticate the user before deletion
-    reauthenticateWithCredential(user, credential)
-        .then(() => {
-            // After reauthenticating, delete the user
-            return firebaseDeleteUser(user);
-        })
-        .then(() => {
-            console.log('User account deleted successfully.');
-        })
-        .then(() => {
-            Toastify({
-                text: "Deleted user successful!", // Text to display in the toast
-                duration: 3000,            // Duration in milliseconds (3 seconds in this case)
-                close: true,               // Show a close button
-                gravity: "top",            // Position the toast at the top
-                position: "right",         // Display toast on the right side
-            }).showToast();
-        })
-        .then(() => {
-            deleteForm.reset();
-        })
-        .then(() => {
-            window.location.href = 'https://space-gunner.netlify.app'; // Redirect after deletion
-        })
-        .catch((error) => {
-            console.error('Error deleting user: ', error.message);
-        });
+async function logoutUser(e) {
+    try {
+        if (e) e.preventDefault()
+        await signOut(auth)
+
+        Toastify({
+            text: "Log out successful!\nRedirecting ...",
+            duration: 2000,
+            close: true,
+            gravity: "top",
+            position: "right",
+            style: {
+                fontSize: "14px",
+                maxWidth: "fit-content",
+                background: "rgba(0, 0, 0, 0.5)",
+                border: "2px solid cyan",
+                padding: ".5rem",
+                color: "#ffffff",
+                wordWrap: "break-word",
+                textAlign: "center",
+                zIndex: '400',
+                backdropFilter: 'blur(10px)',
+            }
+        }).showToast();
+
+        setTimeout(() => {
+            window.location.href = 'https://space-gunner.netlify.app';
+        }, 2000);
+    } catch (err) {
+        console.error(err.message);
+        Toastify({
+            text: `${err.code}`,
+            duration: 2000,
+            close: true,
+            gravity: "top",
+            position: "right",
+            style: {
+                fontSize: "14px",
+                maxWidth: "fit-content",
+                background: "rgba(0, 0, 0, 0.5)",
+                border: "2px solid red",
+                padding: ".5rem",
+                color: "#ffffff",
+                wordWrap: "break-word",
+                textAlign: "center",
+                zIndex: '400',
+                backdropFilter: 'blur(10px)',
+            }
+        }).showToast();
+    }
 }
 
+
+async function deleteUser(email, password) {
+    const user = auth.currentUser;
+
+    try {
+        if (!user) {
+            const cred = await signInWithEmailAndPassword(auth, email, password);
+            await deleteAfterAuth(cred.user, email, password)
+        } else {
+            deleteAfterAuth(user, email, password)
+        }
+    } catch (err) {
+        if (err.code === 'auth/invalid-credential') {
+            Toastify({
+                text: "Check you Email and password and try again.",
+                duration: 2000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                style: {
+                    fontSize: "14px",
+                    maxWidth: "fit-content",
+                    background: "rgba(0, 0, 0, 0.5)",
+                    border: "2px solid red",
+                    padding: ".5rem",
+                    color: "#ffffff",
+                    wordWrap: "break-word",
+                    textAlign: "center",
+                    zIndex: '400',
+                    backdropFilter: 'blur(10px)',
+                }
+            }).showToast();
+        }
+        else if (err.code === 'auth/too-many-requests') {
+            Toastify({
+                text: "Too many login attempts try again later.",
+                duration: 2000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                style: {
+                    fontSize: "14px",
+                    maxWidth: "fit-content",
+                    background: "rgba(0, 0, 0, 0.5)",
+                    border: "2px solid red",
+                    padding: ".5rem",
+                    color: "#ffffff",
+                    wordWrap: "break-word",
+                    textAlign: "center",
+                    zIndex: '400',
+                    backdropFilter: 'blur(10px)',
+                }
+            }).showToast();
+        }
+        else {
+            console.error('Error signing in user: ', err.message);
+            Toastify({
+                text: `${err.code}`,
+                duration: 2000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                style: {
+                    fontSize: "14px",
+                    maxWidth: "fit-content",
+                    background: "rgba(0, 0, 0, 0.5)",
+                    border: "2px solid red",
+                    padding: ".5rem",
+                    color: "#ffffff",
+                    wordWrap: "break-word",
+                    textAlign: "center",
+                    zIndex: '400',
+                    backdropFilter: 'blur(10px)',
+                }
+            }).showToast();
+        }
+    }
+
+}
+
+async function deleteAfterAuth(user, email, password) {
+    try {
+        const cred = EmailAuthProvider.credential(email, password);
+
+        await reauthenticateWithCredential(user, cred)
+
+        await firebaseDeleteUser(user)
+
+        Toastify({
+            text: "Deleted user successful!\nRedirecting ...",
+            duration: 2000,
+            close: true,
+            gravity: "top",
+            position: "right",
+            style: {
+                fontSize: "14px",
+                maxWidth: "fit-content",
+                background: "rgba(0, 0, 0, 0.5)",
+                border: "2px solid cyan",
+                padding: ".5rem",
+                color: "#ffffff",
+                wordWrap: "break-word",
+                textAlign: "center",
+                zIndex: '400',
+                backdropFilter: 'blur(10px)',
+            }
+        }).showToast();
+
+        deleteForm.reset()
+
+        setTimeout(() => {
+            window.location.href = 'https://space-gunner.netlify.app';
+        }, 2000);
+    } catch (err) {
+        console.log(err.message)
+    }
+}
 
 
 function checkAuth() {
